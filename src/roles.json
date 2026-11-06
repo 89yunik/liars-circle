@@ -1,0 +1,1450 @@
+[
+  {
+    "id": "steward",
+    "name": "Steward",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "You start knowing 1 good player.",
+    "image": "./botc/steward.webp"
+  },
+  {
+    "id": "knight",
+    "name": "Knight",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "You start knowing 2 players that are not the Demon.",
+    "image": "./botc/knight.webp"
+  },
+  {
+    "id": "chef",
+    "name": "Chef",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "You start knowing how many pairs of evil players there are.",
+    "image": "./botc/chef.webp"
+  },
+  {
+    "id": "noble",
+    "name": "Noble",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "You start knowing 3 players, 1 and only 1 of which is evil.",
+    "image": "./botc/noble.webp"
+  },
+  {
+    "id": "investigator",
+    "name": "Investigator",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "You start knowing that 1 of 2 players is a particular Minion.",
+    "image": "./botc/investigator.webp"
+  },
+  {
+    "id": "washerwoman",
+    "name": "Washerwoman",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "You start knowing that 1 of 2 players is a particular Townsfolk.",
+    "image": "./botc/washerwoman.webp"
+  },
+  {
+    "id": "clockmaker",
+    "name": "Clockmaker",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "You start knowing how many steps from the Demon to its nearest Minion.",
+    "image": "./botc/clockmaker.webp"
+  },
+  {
+    "id": "grandmother",
+    "name": "Grandmother",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "You start knowing a good player & their character. If the Demon kills them, you die too.",
+    "image": "./botc/grandmother.webp"
+  },
+  {
+    "id": "librarian",
+    "name": "Librarian",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "You start knowing that 1 of 2 players is a particular Outsider. (Or that zero are in play.)",
+    "image": "./botc/librarian.webp"
+  },
+  {
+    "id": "shugenja",
+    "name": "Shugenja",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "You start knowing if your closest evil player is clockwise or anti-clockwise. If equidistant, this info is arbitrary.",
+    "image": "./botc/shugenja.webp"
+  },
+  {
+    "id": "pixie",
+    "name": "Pixie",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "You start knowing 1 in-play Townsfolk. If you were mad that you were this character, you gain their ability when they die.",
+    "image": "./botc/pixie.webp"
+  },
+  {
+    "id": "bountyhunter",
+    "name": "Bounty Hunter",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "You start knowing 1 evil player. If the player you know dies, you learn another evil player tonight. [1 Townsfolk is evil]",
+    "image": "./botc/bountyhunter.webp"
+  },
+  {
+    "id": "empath",
+    "name": "Empath",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "Each night, you learn how many of your 2 alive neighbors are evil.",
+    "image": "./botc/empath.webp"
+  },
+  {
+    "id": "highpriestess",
+    "name": "High Priestess",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each night, learn which player the Storyteller believes you should talk to most.",
+    "image": "./botc/highpriestess.webp"
+  },
+  {
+    "id": "sailor",
+    "name": "Sailor",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "Each night, choose an alive player: either you or they are drunk until dusk. You can't die.",
+    "image": "./botc/sailor.webp"
+  },
+  {
+    "id": "balloonist",
+    "name": "Balloonist",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each night, you learn a player of a different character type than last night. [+0 or +1 Outsider]",
+    "image": "./botc/balloonist.webp"
+  },
+  {
+    "id": "general",
+    "name": "General",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each night, you learn which alignment the Storyteller believes is winning: good, evil, or neither.",
+    "image": "./botc/general.webp"
+  },
+  {
+    "id": "preacher",
+    "name": "Preacher",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each night, choose a player: a Minion, if chosen, learns this. All chosen Minions have no ability.",
+    "image": "./botc/preacher.webp"
+  },
+  {
+    "id": "chambermaid",
+    "name": "Chambermaid",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "Each night, choose 2 alive players (not yourself): you learn how many woke tonight due to their ability.",
+    "image": "./botc/chambermaid.webp"
+  },
+  {
+    "id": "villageidiot",
+    "name": "Village Idiot",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each night, choose a player: you learn their alignment. [+0 to +2 Village Idiots. 1 of the extras is drunk]",
+    "image": "./botc/villageidiot.webp"
+  },
+  {
+    "id": "snakecharmer",
+    "name": "Snake Charmer",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Each night, choose an alive player: a chosen Demon swaps characters & alignments with you & is then poisoned.",
+    "image": "./botc/snakecharmer.webp"
+  },
+  {
+    "id": "mathematician",
+    "name": "Mathematician",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Each night, you learn how many players’ abilities worked abnormally (since dawn) due to another character's ability.",
+    "image": "./botc/mathematician.webp"
+  },
+  {
+    "id": "king",
+    "name": "King",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each night, if the dead equal or outnumber the living, you learn 1 alive character. The Demon knows you are the King.",
+    "image": "./botc/king.webp"
+  },
+  {
+    "id": "dreamer",
+    "name": "Dreamer",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Each night, choose a player (not yourself or Travellers): you learn 1 good & 1 evil character, 1 of which is correct.",
+    "image": "./botc/dreamer.webp"
+  },
+  {
+    "id": "fortuneteller",
+    "name": "Fortune Teller",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "Each night, choose 2 players: you learn if either is a Demon. There is a good player that registers as a Demon to you.",
+    "image": "./botc/fortuneteller.webp"
+  },
+  {
+    "id": "cultleader",
+    "name": "Cult Leader",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each night, you become the alignment of an alive neighbor. If all good players choose to join your cult, your team wins.",
+    "image": "./botc/cultleader.webp"
+  },
+  {
+    "id": "flowergirl",
+    "name": "Flowergirl",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Each night*, you learn if a Demon voted today.",
+    "image": "./botc/flowergirl.webp"
+  },
+  {
+    "id": "towncrier",
+    "name": "Town Crier",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Each night*, you learn if a Minion nominated today.",
+    "image": "./botc/towncrier.webp"
+  },
+  {
+    "id": "oracle",
+    "name": "Oracle",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Each night*, you learn how many dead players are evil.",
+    "image": "./botc/oracle.webp"
+  },
+  {
+    "id": "undertaker",
+    "name": "Undertaker",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "Each night*, you learn which character died by execution today.",
+    "image": "./botc/undertaker.webp"
+  },
+  {
+    "id": "innkeeper",
+    "name": "Innkeeper",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "Each night*, choose 2 players: they can't die tonight, but 1 is drunk until dusk.",
+    "image": "./botc/innkeeper.webp"
+  },
+  {
+    "id": "monk",
+    "name": "Monk",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "Each night*, choose a player (not yourself): they are safe from the Demon tonight.",
+    "image": "./botc/monk.webp"
+  },
+  {
+    "id": "gambler",
+    "name": "Gambler",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "Each night*, choose a player & guess their character: if you guess wrong, you die.",
+    "image": "./botc/gambler.webp"
+  },
+  {
+    "id": "acrobat",
+    "name": "Acrobat",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each night*, choose a player: if they are or become drunk or poisoned tonight, you die.",
+    "image": "./botc/acrobat.webp"
+  },
+  {
+    "id": "exorcist",
+    "name": "Exorcist",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "Each night*, choose a player (different to last night): the Demon, if chosen, learns who you are then doesn't wake tonight.",
+    "image": "./botc/exorcist.webp"
+  },
+  {
+    "id": "lycanthrope",
+    "name": "Lycanthrope",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each night*, choose an alive player. If good, they die & the Demon doesn’t kill tonight. One good player registers as evil.",
+    "image": "./botc/lycanthrope.webp"
+  },
+  {
+    "id": "gossip",
+    "name": "Gossip",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "Each day, you may make a public statement. Tonight, if it was true, a player dies.",
+    "image": "./botc/gossip.webp"
+  },
+  {
+    "id": "savant",
+    "name": "Savant",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Each day, you may visit the Storyteller to learn 2 things in private: 1 is true & 1 is false.",
+    "image": "./botc/savant.webp"
+  },
+  {
+    "id": "alsaahir",
+    "name": "Alsaahir",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Each day, if you publicly guess which players are Minion(s) and which are Demon(s), good wins.",
+    "image": "./botc/alsaahir.webp"
+  },
+  {
+    "id": "engineer",
+    "name": "Engineer",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Once per game, at night, choose which Minions or which Demon is in play.",
+    "image": "./botc/engineer.webp"
+  },
+  {
+    "id": "nightwatchman",
+    "name": "Nightwatchman",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Once per game, at night, choose a player: they learn you are the Nightwatchman.",
+    "image": "./botc/nightwatchman.webp"
+  },
+  {
+    "id": "courtier",
+    "name": "Courtier",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "Once per game, at night, choose a character: they are drunk for 3 nights & 3 days.",
+    "image": "./botc/courtier.webp"
+  },
+  {
+    "id": "seamstress",
+    "name": "Seamstress",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Once per game, at night, choose 2 players (not yourself): you learn if they are the same alignment.",
+    "image": "./botc/seamstress.webp"
+  },
+  {
+    "id": "philosopher",
+    "name": "Philosopher",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Once per game, at night, choose a good character: gain that ability. If this character is in play, they are drunk.",
+    "image": "./botc/philosopher.webp"
+  },
+  {
+    "id": "huntsman",
+    "name": "Huntsman",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Once per game, at night, choose a living player: the Damsel, if chosen, becomes a not-in-play Townsfolk. [+the Damsel]",
+    "image": "./botc/huntsman.webp"
+  },
+  {
+    "id": "professor",
+    "name": "Professor",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "Once per game, at night*, choose a dead player: if they are a Townsfolk, they are resurrected.",
+    "image": "./botc/professor.webp"
+  },
+  {
+    "id": "artist",
+    "name": "Artist",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "Once per game, during the day, privately ask the Storyteller any yes/no question.",
+    "image": "./botc/artist.webp"
+  },
+  {
+    "id": "slayer",
+    "name": "Slayer",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "Once per game, during the day, publicly choose a player: if they are the Demon, they die.",
+    "image": "./botc/slayer.webp"
+  },
+  {
+    "id": "fisherman",
+    "name": "Fisherman",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Once per game, during the day, visit the Storyteller for some advice to help your team win.",
+    "image": "./botc/fisherman.webp"
+  },
+  {
+    "id": "princess",
+    "name": "Princess",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "On your 1st day, if you nominated & executed a player, the Demon doesn't kill tonight.",
+    "image": "./botc/princess.webp"
+  },
+  {
+    "id": "juggler",
+    "name": "Juggler",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "On your 1st day, publicly guess up to 5 players' characters. That night, you learn how many you got correct.",
+    "image": "./botc/juggler.webp"
+  },
+  {
+    "id": "soldier",
+    "name": "Soldier",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "You are safe from the Demon.",
+    "image": "./botc/soldier.webp"
+  },
+  {
+    "id": "alchemist",
+    "name": "Alchemist",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "You have a Minion ability. When using this, the Storyteller may prompt you to choose differently.",
+    "image": "./botc/alchemist.webp"
+  },
+  {
+    "id": "cannibal",
+    "name": "Cannibal",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "You have the ability of the recently killed executee. If they are evil, you are poisoned until a good player dies by execution.",
+    "image": "./botc/cannibal.webp"
+  },
+  {
+    "id": "amnesiac",
+    "name": "Amnesiac",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "You do not know what your ability is. Each day, privately guess what it is: you learn how accurate you are.",
+    "image": "./botc/amnesiac.webp"
+  },
+  {
+    "id": "farmer",
+    "name": "Farmer",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "When you die at night, an alive good player becomes a Farmer.",
+    "image": "./botc/farmer.webp"
+  },
+  {
+    "id": "minstrel",
+    "name": "Minstrel",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "When a Minion dies by execution, all other players (except Travellers) are drunk until dusk tomorrow.",
+    "image": "./botc/minstrel.webp"
+  },
+  {
+    "id": "ravenkeeper",
+    "name": "Ravenkeeper",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "If you die at night, you are woken to choose a player: you learn their character.",
+    "image": "./botc/ravenkeeper.webp"
+  },
+  {
+    "id": "sage",
+    "name": "Sage",
+    "edition": "snv",
+    "team": "townsfolk",
+    "ability": "If the Demon kills you, you learn that it is 1 of 2 players.",
+    "image": "./botc/sage.webp"
+  },
+  {
+    "id": "choirboy",
+    "name": "Choirboy",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "If the Demon kills the King, you learn which player is the Demon. [+the King]",
+    "image": "./botc/choirboy.webp"
+  },
+  {
+    "id": "banshee",
+    "name": "Banshee",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "If the Demon kills you, all players learn this. From now on, you may nominate twice per day and vote twice per nomination.",
+    "image": "./botc/banshee.webp"
+  },
+  {
+    "id": "tealady",
+    "name": "Tea Lady",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "If both your alive neighbors are good, they can't die.",
+    "image": "./botc/tealady.webp"
+  },
+  {
+    "id": "mayor",
+    "name": "Mayor",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "If only 3 players live & no execution occurs, your team wins. If you die at night, another player might die instead.",
+    "image": "./botc/mayor.webp"
+  },
+  {
+    "id": "fool",
+    "name": "Fool",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "The 1st time you die, you don't.",
+    "image": "./botc/fool.webp"
+  },
+  {
+    "id": "virgin",
+    "name": "Virgin",
+    "edition": "tb",
+    "team": "townsfolk",
+    "ability": "The 1st time you are nominated, if the nominator is a Townsfolk, they are executed immediately.",
+    "image": "./botc/virgin.webp"
+  },
+  {
+    "id": "magician",
+    "name": "Magician",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "The Demon thinks you are a Minion. Minions think you are a Demon.",
+    "image": "./botc/magician.webp"
+  },
+  {
+    "id": "poppygrower",
+    "name": "Poppy Grower",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "Minions & Demons do not know each other. If you die, they learn who each other are that night.",
+    "image": "./botc/poppygrower.webp"
+  },
+  {
+    "id": "pacifist",
+    "name": "Pacifist",
+    "edition": "bmr",
+    "team": "townsfolk",
+    "ability": "Executed good players might not die.",
+    "image": "./botc/pacifist.webp"
+  },
+  {
+    "id": "atheist",
+    "name": "Atheist",
+    "edition": "carousel",
+    "team": "townsfolk",
+    "ability": "The Storyteller can break the game rules, and if executed, good wins, even if you are dead. [No evil characters]",
+    "image": "./botc/atheist.webp"
+  },
+  {
+    "id": "hermit",
+    "name": "Hermit",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "You have all Outsider abilities. [-0 or -1 Outsider]",
+    "image": "./botc/hermit.webp"
+  },
+  {
+    "id": "butler",
+    "name": "Butler",
+    "edition": "tb",
+    "team": "outsider",
+    "ability": "Each night, choose a player (not yourself): tomorrow, you may only vote if they are voting too.",
+    "image": "./botc/butler.webp"
+  },
+  {
+    "id": "goon",
+    "name": "Goon",
+    "edition": "bmr",
+    "team": "outsider",
+    "ability": "Each night, the 1st player to choose you with their ability is drunk until dusk. You become their alignment.",
+    "image": "./botc/goon.webp"
+  },
+  {
+    "id": "ogre",
+    "name": "Ogre",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "On your 1st night, choose a player (not yourself): you become their alignment (you don't know which) even if drunk or poisoned.",
+    "image": "./botc/ogre.webp"
+  },
+  {
+    "id": "lunatic",
+    "name": "Lunatic",
+    "edition": "bmr",
+    "team": "outsider",
+    "ability": "You think you are a Demon, but you are not. The Demon knows who you are & who you choose at night.",
+    "image": "./botc/lunatic.webp"
+  },
+  {
+    "id": "drunk",
+    "name": "Drunk",
+    "edition": "tb",
+    "team": "outsider",
+    "ability": "You do not know you are the Drunk. You think you are a Townsfolk character, but you are not.",
+    "image": "./botc/drunk.webp"
+  },
+  {
+    "id": "tinker",
+    "name": "Tinker",
+    "edition": "bmr",
+    "team": "outsider",
+    "ability": "You might die at any time.",
+    "image": "./botc/tinker.webp"
+  },
+  {
+    "id": "recluse",
+    "name": "Recluse",
+    "edition": "tb",
+    "team": "outsider",
+    "ability": "You might register as evil & as a Minion or Demon, even if dead.",
+    "image": "./botc/recluse.webp"
+  },
+  {
+    "id": "golem",
+    "name": "Golem",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "You may only nominate once per game. When you do, if the nominee is not the Demon, they die.",
+    "image": "./botc/golem.webp"
+  },
+  {
+    "id": "sweetheart",
+    "name": "Sweetheart",
+    "edition": "snv",
+    "team": "outsider",
+    "ability": "When you die, 1 player is drunk from now on.",
+    "image": "./botc/sweetheart.webp"
+  },
+  {
+    "id": "plaguedoctor",
+    "name": "Plague Doctor",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "When you die, the Storyteller gains a Minion ability.",
+    "image": "./botc/plaguedoctor.webp"
+  },
+  {
+    "id": "klutz",
+    "name": "Klutz",
+    "edition": "snv",
+    "team": "outsider",
+    "ability": "When you learn that you died, publicly choose 1 alive player: if they are evil, your team loses.",
+    "image": "./botc/klutz.webp"
+  },
+  {
+    "id": "moonchild",
+    "name": "Moonchild",
+    "edition": "bmr",
+    "team": "outsider",
+    "ability": "When you learn that you died, publicly choose 1 alive player. Tonight, if it was a good player, they die.",
+    "image": "./botc/moonchild.webp"
+  },
+  {
+    "id": "saint",
+    "name": "Saint",
+    "edition": "tb",
+    "team": "outsider",
+    "ability": "If you die by execution, your team loses.",
+    "image": "./botc/saint.webp"
+  },
+  {
+    "id": "barber",
+    "name": "Barber",
+    "edition": "snv",
+    "team": "outsider",
+    "ability": "If you died today or tonight, the Demon may choose 2 players (not another Demon) to swap characters.",
+    "image": "./botc/barber.webp"
+  },
+  {
+    "id": "hatter",
+    "name": "Hatter",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "If you died today or tonight, the Minion & Demon players may choose new Minion & Demon characters to be.",
+    "image": "./botc/hatter.webp"
+  },
+  {
+    "id": "mutant",
+    "name": "Mutant",
+    "edition": "snv",
+    "team": "outsider",
+    "ability": "If you are “mad” about being an Outsider, you might be executed.",
+    "image": "./botc/mutant.webp"
+  },
+  {
+    "id": "politician",
+    "name": "Politician",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "If you were the player most responsible for your team losing, you change alignment & win, even if dead.",
+    "image": "./botc/politician.webp"
+  },
+  {
+    "id": "zealot",
+    "name": "Zealot",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "If there are 5 or more players alive, you must vote for every nomination.",
+    "image": "./botc/zealot.webp"
+  },
+  {
+    "id": "damsel",
+    "name": "Damsel",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "All Minions know a Damsel is in play. If a Minion publicly guesses you (once), your team loses.",
+    "image": "./botc/damsel.webp"
+  },
+  {
+    "id": "snitch",
+    "name": "Snitch",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "Each Minion gets 3 bluffs.",
+    "image": "./botc/snitch.webp"
+  },
+  {
+    "id": "heretic",
+    "name": "Heretic",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "Whoever wins, loses & whoever loses, wins, even if you are dead.",
+    "image": "./botc/heretic.webp"
+  },
+  {
+    "id": "puzzlemaster",
+    "name": "Puzzlemaster",
+    "edition": "carousel",
+    "team": "outsider",
+    "ability": "1 player is drunk, even if you die. If you guess (once) who it is, learn the Demon player, but guess wrong & get false info.",
+    "image": "./botc/puzzlemaster.webp"
+  },
+  {
+    "id": "mezepheles",
+    "name": "Mezepheles",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "You start knowing a secret word. The 1st good player to say this word becomes evil that night.",
+    "image": "./botc/mezepheles.webp"
+  },
+  {
+    "id": "godfather",
+    "name": "Godfather",
+    "edition": "bmr",
+    "team": "minion",
+    "ability": "You start knowing which Outsiders are in play. If 1 died today, choose a player tonight: they die. [-1 or +1 Outsider]",
+    "image": "./botc/godfather.webp"
+  },
+  {
+    "id": "poisoner",
+    "name": "Poisoner",
+    "edition": "tb",
+    "team": "minion",
+    "ability": "Each night, choose a player: they are poisoned tonight and tomorrow day.",
+    "image": "./botc/poisoner.webp"
+  },
+  {
+    "id": "devilsadvocate",
+    "name": "Devil's Advocate",
+    "edition": "bmr",
+    "team": "minion",
+    "ability": "Each night, choose a living player (different to last night): if executed tomorrow, they don't die.",
+    "image": "./botc/devilsadvocate.webp"
+  },
+  {
+    "id": "spy",
+    "name": "Spy",
+    "edition": "tb",
+    "team": "minion",
+    "ability": "Each night, you see the Grimoire. You might register as good & as a Townsfolk or Outsider, even if dead.",
+    "image": "./botc/spy.webp"
+  },
+  {
+    "id": "harpy",
+    "name": "Harpy",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "Each night, choose 2 players: tomorrow, the 1st player is mad that the 2nd is evil, or one or both might die.",
+    "image": "./botc/harpy.webp"
+  },
+  {
+    "id": "witch",
+    "name": "Witch",
+    "edition": "snv",
+    "team": "minion",
+    "ability": "Each night, choose a player: if they nominate tomorrow, they die. If just 3 players live, you lose this ability.",
+    "image": "./botc/witch.webp"
+  },
+  {
+    "id": "cerenovus",
+    "name": "Cerenovus",
+    "edition": "snv",
+    "team": "minion",
+    "ability": "Each night, choose a player & a good character: they are “mad” they are this character tomorrow, or might be executed.",
+    "image": "./botc/cerenovus.webp"
+  },
+  {
+    "id": "fearmonger",
+    "name": "Fearmonger",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "Each night, choose a player: if you nominate & execute them, their team loses. All players know if you choose a new player.",
+    "image": "./botc/fearmonger.webp"
+  },
+  {
+    "id": "pithag",
+    "name": "Pit-Hag",
+    "edition": "snv",
+    "team": "minion",
+    "ability": "Each night*, choose a player & a character they become (if not in play). If a Demon is made, deaths tonight are arbitrary.",
+    "image": "./botc/pithag.webp"
+  },
+  {
+    "id": "psychopath",
+    "name": "Psychopath",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "Each day, before nominations, you may publicly choose a player: they die. If executed, you only die if you lose roshambo.",
+    "image": "./botc/psychopath.webp"
+  },
+  {
+    "id": "assassin",
+    "name": "Assassin",
+    "edition": "bmr",
+    "team": "minion",
+    "ability": "Once per game, at night*, choose a player: they die, even if for some reason they could not.",
+    "image": "./botc/assassin.webp"
+  },
+  {
+    "id": "wizard",
+    "name": "Wizard",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "Once per game, choose to make a wish. If granted, it might have a price & leave a clue as to its nature.",
+    "image": "./botc/wizard.webp"
+  },
+  {
+    "id": "widow",
+    "name": "Widow",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "On your 1st night, look at the Grimoire & choose a player: they are poisoned. 1 good player knows a Widow is in play.",
+    "image": "./botc/widow.webp"
+  },
+  {
+    "id": "xaan",
+    "name": "Xaan",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "On night X, all Townsfolk are poisoned until dusk. [X Outsiders]",
+    "image": "./botc/xaan.webp"
+  },
+  {
+    "id": "marionette",
+    "name": "Marionette",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "You think you are a good character, but you are not. The Demon knows who you are. [You neighbor the Demon]",
+    "image": "./botc/marionette.webp"
+  },
+  {
+    "id": "wraith",
+    "name": "Wraith",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "You may choose to open your eyes at night. You wake when other evil players do.",
+    "image": "./botc/wraith.webp"
+  },
+  {
+    "id": "summoner",
+    "name": "Summoner",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "You get 3 bluffs. On the 3rd night, choose a player: they become an evil Demon of your choice. [No Demon]",
+    "image": "./botc/summoner.webp"
+  },
+  {
+    "id": "eviltwin",
+    "name": "Evil Twin",
+    "edition": "snv",
+    "team": "minion",
+    "ability": "You & an opposing player know each other. If the good player is executed, evil wins. Good can't win if you both live.",
+    "image": "./botc/eviltwin.webp"
+  },
+  {
+    "id": "goblin",
+    "name": "Goblin",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "If you publicly claim to be the Goblin when nominated & are executed that day, your team wins.",
+    "image": "./botc/goblin.webp"
+  },
+  {
+    "id": "boomdandy",
+    "name": "Boomdandy",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "If you are executed, all but 3 players die. After a 10 to 1 countdown, the player with the most players pointing at them, dies.",
+    "image": "./botc/boomdandy.webp"
+  },
+  {
+    "id": "mastermind",
+    "name": "Mastermind",
+    "edition": "bmr",
+    "team": "minion",
+    "ability": "If the Demon dies by execution (ending the game), play for 1 more day. If a player is then executed, their team loses.",
+    "image": "./botc/mastermind.webp"
+  },
+  {
+    "id": "scarletwoman",
+    "name": "Scarlet Woman",
+    "edition": "tb",
+    "team": "minion",
+    "ability": "If there are 5 or more players alive & the Demon dies, you become the Demon. (Travellers don't count.)",
+    "image": "./botc/scarletwoman.webp"
+  },
+  {
+    "id": "vizier",
+    "name": "Vizier",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "All players know you are the Vizier. You cannot die during the day. If good voted, you may choose to execute immediately.",
+    "image": "./botc/vizier.webp"
+  },
+  {
+    "id": "organgrinder",
+    "name": "Organ Grinder",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "All players keep their eyes closed when voting and the vote tally is secret. Each night, choose if you are drunk until dusk.",
+    "image": "./botc/organgrinder.webp"
+  },
+  {
+    "id": "boffin",
+    "name": "Boffin",
+    "edition": "carousel",
+    "team": "minion",
+    "ability": "The Demon (even if drunk or poisoned) has a not-in-play good character’s ability. You both know which.",
+    "image": "./botc/boffin.webp"
+  },
+  {
+    "id": "baron",
+    "name": "Baron",
+    "edition": "tb",
+    "team": "minion",
+    "ability": "There are extra Outsiders in play. [+2 Outsiders]",
+    "image": "./botc/baron.webp"
+  },
+  {
+    "id": "yaggababble",
+    "name": "Yaggababble",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "You start knowing a secret phrase. For each time you said it publicly today, a player might die.",
+    "image": "./botc/yaggababble.webp"
+  },
+  {
+    "id": "pukka",
+    "name": "Pukka",
+    "edition": "bmr",
+    "team": "demon",
+    "ability": "Each night, choose a player: they are poisoned. The previously poisoned player dies then becomes healthy.",
+    "image": "./botc/pukka.webp"
+  },
+  {
+    "id": "lilmonsta",
+    "name": "Lil' Monsta",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "Each night, Minions choose who babysits Lil' Monsta & \"is the Demon\". Each night*, a player might die. [+1 Minion]",
+    "image": "./botc/lilmonsta.webp"
+  },
+  {
+    "id": "nodashii",
+    "name": "No Dashii",
+    "edition": "snv",
+    "team": "demon",
+    "ability": "Each night*, choose a player: they die. Your 2 Townsfolk neighbors are poisoned.",
+    "image": "./botc/nodashii.webp"
+  },
+  {
+    "id": "imp",
+    "name": "Imp",
+    "edition": "tb",
+    "team": "demon",
+    "ability": "Each night*, choose a player: they die. If you kill yourself this way, a Minion becomes the Imp.",
+    "image": "./botc/imp.webp"
+  },
+  {
+    "id": "shabaloth",
+    "name": "Shabaloth",
+    "edition": "bmr",
+    "team": "demon",
+    "ability": "Each night*, choose 2 players: they die. A dead player you chose last night might be regurgitated.",
+    "image": "./botc/shabaloth.webp"
+  },
+  {
+    "id": "ojo",
+    "name": "Ojo",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "Each night*, choose a character: they die. If they are not in play, the Storyteller chooses who dies.",
+    "image": "./botc/ojo.webp"
+  },
+  {
+    "id": "kazali",
+    "name": "Kazali",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "Each night*, choose a player: they die. [You choose which players are which Minions. -? to +? Outsiders]",
+    "image": "./botc/kazali.webp"
+  },
+  {
+    "id": "po",
+    "name": "Po",
+    "edition": "bmr",
+    "team": "demon",
+    "ability": "Each night*, you may choose a player: they die. If your last choice was no-one, choose 3 players tonight.",
+    "image": "./botc/po.webp"
+  },
+  {
+    "id": "zombuul",
+    "name": "Zombuul",
+    "edition": "bmr",
+    "team": "demon",
+    "ability": "Each night*, if no-one died today, choose a player: they die. The 1st time you die, you live but register as dead.",
+    "image": "./botc/zombuul.webp"
+  },
+  {
+    "id": "vigormortis",
+    "name": "Vigormortis",
+    "edition": "snv",
+    "team": "demon",
+    "ability": "Each night*, choose a player: they die. Minions you kill keep their ability & poison 1 Townsfolk neighbor. [-1 Outsider]",
+    "image": "./botc/vigormortis.webp"
+  },
+  {
+    "id": "vortox",
+    "name": "Vortox",
+    "edition": "snv",
+    "team": "demon",
+    "ability": "Each night*, choose a player: they die. Townsfolk abilities yield false info. Each day, if no-one is executed, evil wins.",
+    "image": "./botc/vortox.webp"
+  },
+  {
+    "id": "legion",
+    "name": "Legion",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "Each night*, a player might die. Executions fail if only evil voted. You register as a Minion too. [Most players are Legion]",
+    "image": "./botc/legion.webp"
+  },
+  {
+    "id": "fanggu",
+    "name": "Fang Gu",
+    "edition": "snv",
+    "team": "demon",
+    "ability": "Each night*, choose a player: they die. The 1st Outsider this kills becomes an evil Fang Gu & you die instead. [+1 Outsider]",
+    "image": "./botc/fanggu.webp"
+  },
+  {
+    "id": "lordoftyphon",
+    "name": "Lord of Typhon",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "Each night*, choose a player: they die. [Evil characters are in a line. You are in the middle. +1 Minion. -? to +? Outsiders]",
+    "image": "./botc/lordoftyphon.webp"
+  },
+  {
+    "id": "lleech",
+    "name": "Lleech",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "Each night*, choose a player: they die. You start by choosing a player: they are poisoned. You die if & only if they are dead.",
+    "image": "./botc/lleech.webp"
+  },
+  {
+    "id": "alhadikhia",
+    "name": "Al-Hadikhia",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "Each night*, you may choose 3 players (all players learn who): each silently chooses to live or die, but if all live, all die.",
+    "image": "./botc/alhadikhia.webp"
+  },
+  {
+    "id": "riot",
+    "name": "Riot",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "On day 3, Minions become Riot & nominees die but nominate an alive player immediately. This must happen.",
+    "image": "./botc/riot.webp"
+  },
+  {
+    "id": "leviathan",
+    "name": "Leviathan",
+    "edition": "carousel",
+    "team": "demon",
+    "ability": "If more than 1 good player is executed, evil wins. All players know you are in play. After day 5, evil wins.",
+    "image": "./botc/leviathan.webp"
+  },
+  {
+    "id": "thief",
+    "name": "Thief",
+    "edition": "tb",
+    "team": "traveller",
+    "ability": "Each night, choose a player (not yourself): their vote counts negatively tomorrow.",
+    "image": "./botc/thief.webp"
+  },
+  {
+    "id": "bureaucrat",
+    "name": "Bureaucrat",
+    "edition": "tb",
+    "team": "traveller",
+    "ability": "Each night, choose a player (not yourself): their vote counts as 3 votes tomorrow.",
+    "image": "./botc/bureaucrat.webp"
+  },
+  {
+    "id": "barista",
+    "name": "Barista",
+    "edition": "snv",
+    "team": "traveller",
+    "ability": "Each night, until dusk, 1) a player becomes sober, healthy & gets true info, or 2) their ability works twice. They learn which.",
+    "image": "./botc/barista.webp"
+  },
+  {
+    "id": "harlot",
+    "name": "Harlot",
+    "edition": "snv",
+    "team": "traveller",
+    "ability": "Each night*, choose a living player: if they agree, you learn their character, but you both might die.",
+    "image": "./botc/harlot.webp"
+  },
+  {
+    "id": "butcher",
+    "name": "Butcher",
+    "edition": "snv",
+    "team": "traveller",
+    "ability": "Each day, after the 1st execution, you may nominate again.",
+    "image": "./botc/butcher.webp"
+  },
+  {
+    "id": "cacklejack",
+    "name": "Cacklejack",
+    "edition": "carousel",
+    "team": "traveller",
+    "ability": "Each day, choose a player: a different player changes character tonight.",
+    "image": "./botc/cacklejack.webp"
+  },
+  {
+    "id": "gunslinger",
+    "name": "Gunslinger",
+    "edition": "tb",
+    "team": "traveller",
+    "ability": "Each day, after the 1st vote has been tallied, you may choose a player that voted: they die.",
+    "image": "./botc/gunslinger.webp"
+  },
+  {
+    "id": "matron",
+    "name": "Matron",
+    "edition": "bmr",
+    "team": "traveller",
+    "ability": "Each day, you may choose up to 3 sets of 2 players to swap seats. Players may not leave their seats to talk in private.",
+    "image": "./botc/matron.webp"
+  },
+  {
+    "id": "gangster",
+    "name": "Gangster",
+    "edition": "carousel",
+    "team": "traveller",
+    "ability": "Once per day, you may choose to kill an alive neighbor, if your other alive neighbor agrees.",
+    "image": "./botc/gangster.webp"
+  },
+  {
+    "id": "bonecollector",
+    "name": "Bone Collector",
+    "edition": "snv",
+    "team": "traveller",
+    "ability": "Once per game, at night*, choose a dead player: they regain their ability until dusk.",
+    "image": "./botc/bonecollector.webp"
+  },
+  {
+    "id": "judge",
+    "name": "Judge",
+    "edition": "bmr",
+    "team": "traveller",
+    "ability": "Once per game, if another player nominated, you may choose to force the current execution to pass or fail.",
+    "image": "./botc/judge.webp"
+  },
+  {
+    "id": "apprentice",
+    "name": "Apprentice",
+    "edition": "bmr",
+    "team": "traveller",
+    "ability": "On your 1st night, you gain a Townsfolk ability (if good), or a Minion ability (if evil).",
+    "image": "./botc/apprentice.webp"
+  },
+  {
+    "id": "beggar",
+    "name": "Beggar",
+    "edition": "tb",
+    "team": "traveller",
+    "ability": "You must use a vote token to vote. If a dead player gives you theirs, you learn their alignment. You are sober & healthy.",
+    "image": "./botc/beggar.webp"
+  },
+  {
+    "id": "deviant",
+    "name": "Deviant",
+    "edition": "snv",
+    "team": "traveller",
+    "ability": "If you were funny today, you cannot die by exile.",
+    "image": "./botc/deviant.webp"
+  },
+  {
+    "id": "scapegoat",
+    "name": "Scapegoat",
+    "edition": "tb",
+    "team": "traveller",
+    "ability": "If a player of your alignment is executed, you might be executed instead.",
+    "image": "./botc/scapegoat.webp"
+  },
+  {
+    "id": "gnome",
+    "name": "Gnome",
+    "edition": "carousel",
+    "team": "traveller",
+    "ability": "All players start knowing a player of your alignment. You may choose to kill anyone who nominates them.",
+    "image": "./botc/gnome.webp"
+  },
+  {
+    "id": "bishop",
+    "name": "Bishop",
+    "edition": "bmr",
+    "team": "traveller",
+    "ability": "Only the Storyteller can nominate. At least 1 opposing player must be nominated each day.",
+    "image": "./botc/bishop.webp"
+  },
+  {
+    "id": "voudon",
+    "name": "Voudon",
+    "edition": "bmr",
+    "team": "traveller",
+    "ability": "Only you & the dead can vote. They don't need a vote token to do so. A 50% majority isn't required.",
+    "image": "./botc/voudon.webp"
+  },
+  {
+    "id": "angel",
+    "name": "Angel",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "Something bad might happen to whoever is most responsible for the death of a new player.",
+    "image": "./botc/angel.webp"
+  },
+  {
+    "id": "buddhist",
+    "name": "Buddhist",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "For the first 2 minutes of each day, veteran players may not talk.",
+    "image": "./botc/buddhist.webp"
+  },
+  {
+    "id": "deusexfiasco",
+    "name": "Deus ex Fiasco",
+    "edition": "carousel",
+    "team": "fabled",
+    "ability": "At least once per game, the Storyteller will make a mistake, correct it, and publicly admit to it.",
+    "image": "./botc/deusexfiasco.webp"
+  },
+  {
+    "id": "djinn",
+    "name": "Djinn",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "Use the Djinn's special rule. All players know what it is.",
+    "image": "./botc/djinn.webp"
+  },
+  {
+    "id": "doomsayer",
+    "name": "Doomsayer",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "If 4 or more players live, each living player may publicly choose (once per game) that a player of their own alignment dies.",
+    "image": "./botc/doomsayer.webp"
+  },
+  {
+    "id": "duchess",
+    "name": "Duchess",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "Each day, 3 players may choose to visit you. At night*, each visitor learns how many visitors are evil, but 1 gets false info.",
+    "image": "./botc/duchess.webp"
+  },
+  {
+    "id": "ferryman",
+    "name": "Ferryman",
+    "edition": "carousel",
+    "team": "fabled",
+    "ability": "On the final day, all dead players regain their vote token.",
+    "image": "./botc/ferryman.webp"
+  },
+  {
+    "id": "fibbin",
+    "name": "Fibbin",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "Once per game, 1 good player might get incorrect information.",
+    "image": "./botc/fibbin.webp"
+  },
+  {
+    "id": "fiddler",
+    "name": "Fiddler",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "Once per game, the Demon secretly chooses an opposing player: all players choose which of these 2 players win.",
+    "image": "./botc/fiddler.webp"
+  },
+  {
+    "id": "hellslibrarian",
+    "name": "Hell's Librarian",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "Something bad might happen to whoever talks when the Storyteller has asked for silence.",
+    "image": "./botc/hellslibrarian.webp"
+  },
+  {
+    "id": "revolutionary",
+    "name": "Revolutionary",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "2 neighboring players are known to be the same alignment. Once per game, 1 of them registers falsely.",
+    "image": "./botc/revolutionary.webp"
+  },
+  {
+    "id": "sentinel",
+    "name": "Sentinel",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "There might be 1 extra or 1 fewer Outsider in play.",
+    "image": "./botc/sentinel.webp"
+  },
+  {
+    "id": "spiritofivory",
+    "name": "Spirit of Ivory",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "There can't be more than 1 extra evil player.",
+    "image": "./botc/spiritofivory.webp"
+  },
+  {
+    "id": "toymaker",
+    "name": "Toymaker",
+    "edition": "fabled",
+    "team": "fabled",
+    "ability": "The Demon may choose not to attack & must do this at least once per game. Evil players get normal starting info.",
+    "image": "./botc/toymaker.webp"
+  },
+  {
+    "id": "bigwig",
+    "name": "Big Wig",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "Each nominee chooses a player: until voting, only they may speak & they are mad the nominee is good or they might die.",
+    "image": "./botc/bigwig.webp"
+  },
+  {
+    "id": "bootlegger",
+    "name": "Bootlegger",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "This script has homebrew characters or rules.",
+    "image": "./botc/bootlegger.webp"
+  },
+  {
+    "id": "gardener",
+    "name": "Gardener",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "The Storyteller assigns all players' characters.",
+    "image": "./botc/gardener.webp"
+  },
+  {
+    "id": "godofug",
+    "name": "God of Ug",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "One Ug hat. When wear Ug hat, must speak one sound at a time but vote twice. If fail, pass Ug hat.",
+    "image": "./botc/godofug.webp"
+  },
+  {
+    "id": "hindu",
+    "name": "Hindu",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "The first 4 players to die are immediately reincarnated as Travellers of the same alignment.",
+    "image": "./botc/hindu.webp"
+  },
+  {
+    "id": "knaves",
+    "name": "Knaves",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "There are 2 Storytellers: one lies & one tells the truth. Once per game, at dusk, they might switch.",
+    "image": "./botc/knaves.webp"
+  },
+  {
+    "id": "pope",
+    "name": "Pope",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "There are duplicate good characters in play. They might also be bluffs.",
+    "image": "./botc/pope.webp"
+  },
+  {
+    "id": "stormcatcher",
+    "name": "Storm Catcher",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "Name a good character. If in play, they can only die by execution, but evil players learn which player it is.",
+    "image": "./botc/stormcatcher.webp"
+  },
+  {
+    "id": "tor",
+    "name": "Tor",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "Players don't know their character or alignment. They learn them when they die.",
+    "image": "./botc/tor.webp"
+  },
+  {
+    "id": "ventriloquist",
+    "name": "Ventriloquist",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "If a player is mad as a fresh character during their nomination, they might not die if executed today.",
+    "image": "./botc/ventriloquist.webp"
+  },
+  {
+    "id": "zenomancer",
+    "name": "Zenomancer",
+    "edition": "loric",
+    "team": "loric",
+    "ability": "One or more players each have a goal. When achieved, that player learns a piece of true info.",
+    "image": "./botc/zenomancer.webp"
+  }
+]

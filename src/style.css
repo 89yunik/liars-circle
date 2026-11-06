@@ -293,6 +293,13 @@ button.history-button, .player-menu button, .confirmation p, .confirmation butto
 .player-menu svg { flex: none; color: var(--gold); }
 .memo-timeline .memo-editor { margin-bottom: 5px; }
 .memo-timeline textarea { padding-block: 5px; }
+dialog.table-dialog.memo-dialog {
+  inset: var(--memo-center-y, 50%) auto auto var(--memo-center-x, 50%);
+  transform: translate(-50%, -50%); margin: 0;
+  width: min(82%, calc(var(--memo-viewport-width, 100vw) * .82), 340px);
+  max-height: min(calc(var(--memo-viewport-height, 100dvh) - 32px), 720px);
+  overflow: auto; overscroll-behavior: contain;
+}
 .table-center .vote-prompt { min-height: 0; max-width: 145px; white-space: normal; font-size: .8rem; }
 
 dialog.table-dialog.compact-dialog { width: max-content; max-width: calc(100% - 32px); }

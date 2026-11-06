@@ -313,7 +313,7 @@ export function Table({ game, commit, flush, end }: {
           </button>)}
       </div>
     </Sheet>}
-    {(popup?.kind === 'general' || (popup?.kind === 'memo' && selected)) && <Sheet centered title={selected ? `${selected.name} · 메모` : '공통 메모'} close={close}>
+    {(popup?.kind === 'general' || (popup?.kind === 'memo' && selected)) && <Sheet centered memo title={selected ? `${selected.name} · 메모` : '공통 메모'} close={close}>
       <div className="memo-timeline">
         {Array.from({ length: phaseIndex(game.currentPhase) + 1 }, (_, index) => {
           const memoPhase = phaseAt(index);

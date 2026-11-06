@@ -297,6 +297,9 @@ button.history-button, .player-menu button, .confirmation p, .confirmation butto
 .player-menu svg { flex: none; color: var(--gold); }
 .memo-timeline .memo-editor { margin-bottom: 5px; }
 .memo-timeline textarea { padding-block: 5px; }
+@media (hover: none) and (pointer: coarse) {
+  .memo-timeline textarea:focus { font-size: max(16px, .9rem); }
+}
 dialog.table-dialog.memo-dialog {
   inset: var(--memo-center-y, 50%) auto auto var(--memo-center-x, 50%);
   transform: translate(-50%, -50%); margin: 0;

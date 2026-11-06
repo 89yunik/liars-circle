@@ -284,6 +284,10 @@ button.history-button, .player-menu button, .confirmation p, .confirmation butto
   display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center; gap: 8px; padding: 4px;
 }
+.player-profile .check {
+  display: flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+.player-profile .check input { flex: none; }
 .player-menu button {
   justify-content: flex-start; gap: 10px; min-width: 126px; padding-inline: 10px;
   border: 0; border-radius: 0; background: transparent;

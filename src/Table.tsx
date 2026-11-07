@@ -58,12 +58,11 @@ export function Table({ game, commit, flush, end }: {
   }, [history]);
   const phase = view ?? game.currentPhase;
   const isDay = phase.startsWith('D');
-  const hasNominated = (playerId: string) => game.nominations.some(record =>
-    record.phaseId === phase && record.nominatorId === playerId);
+  const canNominate = (playerId: string) => isDay && aliveAt(game, playerId, phase) &&
+    !game.nominations.some(record => record.phaseId === phase && record.nominatorId === playerId);
   const roles = characters(game.script);
   const selected = popup && 'playerId' in popup ? game.players.find(player => player.id === popup.playerId) : undefined;
   const selectedAlive = selected && aliveAt(game, selected.id, phase);
-  const selectedNominated = selected && hasNominated(selected.id);
   const selectedExecuted = selected && game.events.some(event => isExecution(event, selected.id));
   const name = (key: string) => game.players.find(player => player.id === key)?.name ?? '—';
   const close = () => { flush(); setPopup(null); };
@@ -81,7 +80,7 @@ export function Table({ game, commit, flush, end }: {
   }
 
   function startVote(nominatorId: string) {
-    if (!isDay || hasNominated(nominatorId)) return;
+    if (!canNominate(nominatorId)) return;
     setPopup(null);
     setHistory(null);
     setVote({
@@ -267,17 +266,17 @@ export function Table({ game, commit, flush, end }: {
       message="게임을 종료하고 저장된 기록을 삭제할까요?" close={close} confirm={end} />}
     {popup?.kind === 'player' && selected && <Sheet centered compact title={selected.name} close={close}>
       <div className="stack player-menu">
-        {([['profile', '플레이어'], ['character', '캐릭터'], ['memo', '메모'], ['nomination', selectedNominated ? '지명 완료' : '지명·투표'], ['whisper', '밀담'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', selectedAlive ? '사망' : '부활']] as const)
+        {([['profile', '플레이어'], ['character', '캐릭터'], ['memo', '메모'], ['nomination', '지명'], ['whisper', '밀담'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', selectedAlive ? '사망' : '부활']] as const)
           .filter(([kind]) => isDay || (kind !== 'nomination' && kind !== 'whisper' && kind !== 'execution'))
           .map(([kind, label]) => <button key={kind} className="record-link"
-            disabled={kind === 'nomination' && selectedNominated} onClick={() => {
+            disabled={kind === 'nomination' && !canNominate(selected.id)} onClick={() => {
             if (kind === 'nomination') startVote(selected.id);
             else if (kind === 'whisper') startWhisper(selected.id);
             else if (kind === 'execution' || kind === 'life') recordPlayerEvent(selected.id, kind);
             else setPopup({ kind, playerId: selected.id });
           }}>
             <MenuIcon kind={kind === 'life' && !selectedAlive ? 'revival' : kind} />
-            {label}
+            <span>{label}</span>
           </button>)}
       </div>
     </Sheet>}

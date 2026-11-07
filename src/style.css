@@ -300,6 +300,8 @@ button.history-button, .player-menu button, .confirmation p, .confirmation butto
 }
 .player-menu button + button { border-top: 1px solid #a17b484d; }
 .player-menu button:hover:not(:disabled) { background: #a17b4824; }
+.player-menu button:disabled { opacity: 1; }
+.player-menu button:disabled span { opacity: .45; }
 .player-menu svg { flex: none; color: var(--gold); }
 .memo-timeline .memo-editor { margin-bottom: 5px; }
 .memo-timeline textarea { padding-block: 5px; }

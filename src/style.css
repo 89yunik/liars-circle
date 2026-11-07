@@ -161,7 +161,13 @@ button.token {
 .token:is(.dead, .executed) { border-style: dashed; }
 .token.dead .token-art { opacity: .45; }
 .token.selected { outline: 3px solid var(--character-border); outline-offset: 3px; }
-.token-label { position: absolute; top: 75%; left: 50%; transform: translateX(-50%); max-width: min(72px, max(100%, 4ch)); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 1px 5px; background: #17121e; border-radius: 5px; font-size: .72rem; font-weight: 750; }
+.token-label {
+  position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+  width: max-content; max-width: calc(100% + 12px); overflow-wrap: anywhere;
+  padding: 1px 5px; background: #17121e; border-radius: 5px;
+  font-size: .72rem; line-height: 1.25; font-weight: 750;
+}
+.token-label.long-name { font-size: .625rem; }
 .vote-marks { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; }
 .vote-marks i { font: 700 .65rem system-ui; border: 2px solid currentColor; border-radius: 50%; width: 18px; height: 18px; background: #181520; }
 .mark-vote { color: #65dfcd; }

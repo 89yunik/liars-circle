@@ -86,7 +86,9 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
           title={role ? `${player.name} · ${role.name}` : player.name}
           onClick={() => tap(player.id)}>
           <span className="token-art"><Portrait key={role?.image} src={role?.image} /></span>
-          <span className="token-label">{player.name}{player.traveller && <sup> T</sup>}</span>
+          <span className={Array.from(player.name).length > 5 ? 'token-label long-name' : 'token-label'}>
+            {player.name}{player.traveller && <sup> T</sup>}
+          </span>
           {statusMark && <span className="token-status" aria-hidden="true">{statusMark}</span>}
           {(nominator || nominee || voter || whisperSource || whisperPartner) && <span className="vote-marks" aria-hidden="true">
             {nominator && <i className="mark-vote">지</i>}{nominee && <i className="mark-vote">피</i>}{voter && <i className="mark-vote">표</i>}

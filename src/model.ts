@@ -84,6 +84,15 @@ export function newGame(script: Script, seats: Pick<Player, 'name' | 'traveller'
   };
 }
 
+export function reorderPlayer(game: Game, playerId: string, seat: number): Game {
+  const previousSeat = game.players.findIndex(player => player.id === playerId);
+  if (previousSeat < 0 || !Number.isInteger(seat) || seat < 0 || seat >= game.players.length || previousSeat === seat) return game;
+  const players = [...game.players];
+  const [player] = players.splice(previousSeat, 1);
+  players.splice(seat, 0, player);
+  return { ...game, players: players.map((player, index) => ({ ...player, seat: index })) };
+}
+
 export function removePlayer(game: Game, playerId: string): Game {
   if (game.players.length <= MIN_PLAYERS) return game;
   const keep = (id: string) => id !== playerId;

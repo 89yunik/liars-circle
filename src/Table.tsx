@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MemoEditor, Portrait, Sheet } from './Editors.tsx';
 import {
-  aliveAt, byTime, id, MAX_PLAYERS, MIN_PLAYERS, nextSequence, phaseAt, phaseIndex, putRecord, removeLifeEvent, removePlayer, writeMemo,
+  aliveAt, byTime, id, MAX_PLAYERS, MIN_PLAYERS, nextSequence, phaseAt, phaseIndex, putRecord, removeLifeEvent, removePlayer, reorderPlayer, writeMemo,
   type EventResult, type Game, type GameEvent, type MemoTarget, type PhaseId, type Whisper,
 } from './model.ts';
 import { characters } from './scripts.ts';
@@ -253,6 +253,7 @@ export function Table({ game, commit, flush, end }: {
       </button>
     </header>
     <TableBoard game={game} phase={phase} roles={roles} selectedId={selected?.id} vote={vote} whisper={whisper}
+      movePlayer={(playerId, seat) => commit(reorderPlayer(game, playerId, seat))}
       tap={tap} completeVote={completeVote} completeWhisper={completeWhisper} />
     <TableHistory nominations={game.nominations} whispers={whispers} history={history} selecting={selecting}
       setHistory={setHistory} name={name} openMemo={() => {

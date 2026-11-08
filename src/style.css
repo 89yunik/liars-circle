@@ -149,11 +149,15 @@ button.board-action { flex: none; display: grid; place-items: center; color: #f2
   --character-border: var(--character-border-evil);
 }
 :is(button.token, button.role):hover:not(:disabled) { border-color: var(--character-border); }
-button.token {
+.token-seat {
   left: calc(50% + (50% - var(--seat-inset)) * var(--seat-x));
   top: calc(50% + (50% - var(--seat-inset) - 5px) * var(--seat-y));
   position: absolute; transform: translate(-50%, -50%); z-index: 1;
-  width: var(--token-size); height: var(--token-size); min-height: 0; padding: 0;
+  width: var(--token-size); height: var(--token-size); touch-action: none; user-select: none;
+}
+.token-seat.dragging { z-index: 4; cursor: grabbing; }
+button.token {
+  position: relative; width: 100%; height: 100%; min-height: 0; padding: 0;
   border: 2px solid var(--character-border); border-radius: 50%; background: transparent;
 }
 .token-art { display: grid; place-items: center; width: 100%; height: 100%; }

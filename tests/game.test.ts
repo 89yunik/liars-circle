@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { aliveAt, evenlySpacedSeats, newGame, nextSequence, phaseAt, phaseIndex, putRecord, removeLifeEvent, removePlayer, seatPosition, usedGhostVote, writeMemo,
+import { aliveAt, evenlySpacedSeats, newGame, nextSequence, phaseAt, phaseIndex, putRecord, removeLifeEvent, removePlayer, reorderPlayer, seatPosition, usedGhostVote, writeMemo,
   type GameEvent, type Nomination } from '../src/model.ts';
 import { characters, officialScripts, parseScript } from '../src/scripts.ts';
 import { gameKey, libraryKey, restoreGame, restoreLibrary } from '../src/storage.ts';
@@ -36,6 +36,22 @@ test('tall ellipses distribute seats more evenly without changing clockwise orde
   assert.ok(positions[1].x > 0);
   assert.ok(spread(positions) < 1.1);
   assert.ok(spread(Array.from({ length: count }, (_, i) => seatPosition(i, count, 1))) > 1.5);
+});
+
+test('reordering changes seat order while preserving player identities and records', () => {
+  const game = fresh();
+  const ids = game.players.map(player => player.id);
+  const memo = writeMemo(game, 'N1', { target: 'player', playerId: ids[0] }, 'Keep with player');
+  const moved = reorderPlayer(memo, ids[0], 3);
+  assert.deepEqual(moved.players.map(player => player.id), [ids[1], ids[2], ids[3], ids[0], ids[4]]);
+  assert.deepEqual(moved.players.map(player => player.seat), [0, 1, 2, 3, 4]);
+  assert.deepEqual(moved.memos, memo.memos);
+  assert.deepEqual(reorderPlayer(moved, ids[0], 0).players, memo.players);
+  assert.equal(reorderPlayer(game, ids[0], 0), game);
+  assert.equal(reorderPlayer(game, 'missing', 1), game);
+  assert.equal(reorderPlayer(game, ids[0], 1.5), game);
+  assert.equal(reorderPlayer(game, ids[0], -1), game);
+  assert.equal(reorderPlayer(game, ids[0], 5), game);
 });
 
 test('removing a seat cleans up its records and preserves other participants', () => {

@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import { usePlayerDrag } from './usePlayerDrag.ts';
 import { Portrait } from './Editors.tsx';
 import { aliveAt, evenlySpacedSeats, seatPosition, type Character, type Game, type Nomination, type PhaseId, type Whisper } from './model.ts';
 
@@ -10,7 +11,7 @@ const setupCounts = [
 ];
 const setupRoles = ['주민', '외지인', '하수인', '악마'];
 
-export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap, completeVote, completeWhisper }: {
+export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap, movePlayer, completeVote, completeWhisper }: {
   game: Game;
   phase: PhaseId;
   roles: Character[];
@@ -18,9 +19,11 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
   vote: VoteDraft | null;
   whisper: Whisper | null;
   tap: (playerId: string) => void;
+  movePlayer: (playerId: string, seat: number) => void;
   completeVote: () => void;
   completeWhisper: () => void;
 }) {
+  const selecting = vote !== null || whisper !== null;
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSize, setTableSize] = useState({ width: 0, height: 0 });
   useLayoutEffect(() => {
@@ -47,9 +50,30 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
   const inset = Math.min(tableSize.width, tableSize.height) * tokenRatio / 2 + 10;
   const radiusX = tableSize.width / 2 - inset;
   const radiusY = tableSize.height / 2 - inset - 5;
-  const positions = radiusX > 0 && radiusY > 0 ? evenlySpacedSeats(count, radiusX, radiusY) : null;
+  const positions = radiusX > 0 && radiusY > 0
+    ? evenlySpacedSeats(count, radiusX, radiusY)
+    : game.players.map(player => seatPosition(player.seat, count, 1));
 
-  return <div className="table-area">
+  const drag = usePlayerDrag(radiusX, radiusY, (playerId, position) => {
+    let nearestSeat = 0;
+    let nearestDistance = Infinity;
+    positions.forEach((seat, index) => {
+      const distance = Math.hypot((seat.x - position.x) * radiusX, (seat.y - position.y) * radiusY);
+      if (distance < nearestDistance) {
+        nearestSeat = index;
+        nearestDistance = distance;
+      }
+    });
+    movePlayer(playerId, nearestSeat);
+  });
+
+  return <div className="table-area" onPointerDownCapture={() => { drag.suppressClick.current = false; }} onClickCapture={event => {
+    if (event.detail !== 0 && drag.suppressClick.current) {
+      drag.suppressClick.current = false;
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }}>
     <div className="table" ref={tableRef} style={{ '--diameter': `${diameter}px`, '--token-ratio': tokenRatio } as CSSProperties}>
       <div className="table-center">
         {vote ? (vote.step === 2
@@ -68,7 +92,8 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
             <span>{alive} / {count} 생존</span></>}
       </div>
       {game.players.map(player => {
-        const pos = positions?.[player.seat] ?? seatPosition(player.seat, count, 1);
+        const savedPosition = positions[player.seat];
+        const pos = drag.preview?.playerId === player.id ? drag.preview.position : savedPosition;
         const role = roles.find(role => role.id === player.characterId);
         const aliveNow = aliveAt(game, player.id, phase);
         const executed = phaseEvents.some(event => event.kind === 'execution' && event.playerId === player.id);
@@ -79,8 +104,16 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
         const voter = vote?.voterIds.includes(player.id);
         const whisperSource = whisper?.playerId === player.id;
         const whisperPartner = whisper?.partnerIds.includes(player.id);
-        return <button key={player.id} data-team={role?.team} className={`token ${aliveNow ? '' : 'dead'} ${executed ? 'executed' : ''} ${selectedId === player.id ? 'selected' : ''}`}
+        return <div key={player.id} className={drag.preview?.playerId === player.id ? 'token-seat dragging' : 'token-seat'}
           style={{ '--seat-x': pos.x, '--seat-y': pos.y } as CSSProperties}
+          onDragStart={event => event.preventDefault()}
+          onPointerDown={event => { if (!selecting) drag.start(event, player.id, savedPosition); }}
+          onPointerMove={drag.move}
+          onPointerUp={event => drag.finish(event)}
+          onPointerCancel={event => drag.finish(event, true)}
+          onLostPointerCapture={event => drag.finish(event, true)}
+        >
+          <button data-team={role?.team} className={`token ${aliveNow ? '' : 'dead'} ${executed ? 'executed' : ''} ${selectedId === player.id ? 'selected' : ''}`}
           aria-pressed={whisper && !whisperSource ? !!whisperPartner : undefined}
           aria-label={`${player.name}, ${aliveNow ? '생존' : '사망'}${executed ? ', 처형' : ''}${role ? ', ' + role.name : ''}${nominator ? ', 지명자' : ''}${nominee ? ', 피지명자' : ''}${voter ? ', 투표자' : ''}${whisperSource ? ', 밀담 기준 플레이어' : ''}`}
           title={role ? `${player.name} · ${role.name}` : player.name}
@@ -94,7 +127,8 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
             {nominator && <i className="mark-vote">지</i>}{nominee && <i className="mark-vote">피</i>}{voter && <i className="mark-vote">표</i>}
             {whisperSource && <i className="mark-whisper">밀</i>}{whisperPartner && <i className="mark-whisper">✓</i>}
           </span>}
-        </button>;
+          </button>
+        </div>;
       })}
     </div>
   </div>;

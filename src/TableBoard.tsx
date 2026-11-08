@@ -115,10 +115,7 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
           style={{ '--seat-x': pos.x, '--seat-y': pos.y } as CSSProperties}
           onDragStart={event => event.preventDefault()}
           onPointerDown={event => { if (!selecting) drag.start(event, player.id, savedPosition); }}
-          onPointerMove={drag.move}
-          onPointerUp={event => drag.finish(event)}
-          onPointerCancel={event => drag.finish(event, true)}
-          onLostPointerCapture={drag.lostCapture}
+          onTouchStart={event => { if (!selecting) drag.startTouch(event, player.id, savedPosition); }}
         >
           <button data-team={role?.team} className={`token ${aliveNow ? '' : 'dead'} ${executed ? 'executed' : ''} ${selectedId === player.id ? 'selected' : ''}`}
           aria-disabled={selectSource === 'votes' && !canNominate(player.id)}

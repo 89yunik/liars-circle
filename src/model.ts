@@ -139,6 +139,19 @@ export function aliveAt(game: Game, playerId: string, phase: PhaseId, sequence =
   return latest?.result !== 'dead';
 }
 
+export function removeLifeEvent(game: Game, eventId: string): Game {
+  const removed = game.events.find(event => event.id === eventId);
+  if (!removed) return game;
+  let alive = true;
+  const redundantRevivals = new Set<string>();
+  for (const event of game.events.filter(event => event.id !== eventId && event.playerId === removed.playerId).sort(byTime)) {
+    if (event.result === 'survived') continue;
+    if (event.kind === 'revival' && alive && byTime(event, removed) > 0) redundantRevivals.add(event.id);
+    alive = event.result !== 'dead';
+  }
+  return { ...game, events: game.events.filter(event => event.id !== eventId && !redundantRevivals.has(event.id)) };
+}
+
 export function usedGhostVote(game: Game, vote: Nomination, playerId: string) {
   return vote.voterIds.includes(playerId) &&
     (vote.ghostOverrides?.[playerId] ?? !aliveAt(game, playerId, vote.phaseId, vote.sequence));

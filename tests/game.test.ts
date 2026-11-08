@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { aliveAt, evenlySpacedSeats, newGame, nextSequence, phaseAt, phaseIndex, putRecord, removePlayer, seatPosition, usedGhostVote, writeMemo,
+import { aliveAt, evenlySpacedSeats, newGame, nextSequence, phaseAt, phaseIndex, putRecord, removeLifeEvent, removePlayer, seatPosition, usedGhostVote, writeMemo,
   type GameEvent, type Nomination } from '../src/model.ts';
 import { characters, officialScripts, parseScript } from '../src/scripts.ts';
 import { gameKey, libraryKey, restoreGame, restoreLibrary } from '../src/storage.ts';
@@ -102,6 +102,39 @@ test('same-phase death, ghost vote, revival, execution edit and deletion recompu
   assert.equal(aliveAt(game, a.id, 'N2'), false);
   game.events = [];
   assert.equal(aliveAt(game, a.id, 'N2'), true);
+});
+
+test('cancelling an earlier death removes redundant revivals before reapplying execution', () => {
+  const game = fresh();
+  const [a, b] = game.players;
+  const execution: GameEvent = { id: 'execution', phaseId: 'D1', sequence: 1, playerId: a.id,
+    kind: 'execution', result: 'dead', reason: '' };
+  const revival: GameEvent = { ...execution, id: 'revival', phaseId: 'N2', kind: 'revival', result: 'alive' };
+  const otherDeath: GameEvent = { ...execution, id: 'other-death', playerId: b.id };
+  game.events = [revival, otherDeath, execution];
+  assert.equal(aliveAt(game, a.id, 'D2'), true);
+  const cancelled = removeLifeEvent(game, execution.id);
+  assert.deepEqual(cancelled.events, [otherDeath]);
+  assert.equal(aliveAt(cancelled, a.id, 'D1'), true);
+  const reapplied = { ...cancelled, events: [...cancelled.events, { ...execution, id: 'reapplied' }] };
+  assert.equal(aliveAt(reapplied, a.id, 'N2'), false);
+  assert.equal(aliveAt(reapplied, a.id, 'D2'), false);
+  assert.equal(removeLifeEvent(game, 'missing'), game);
+
+  const laterDeath: GameEvent = { ...execution, id: 'later-death', phaseId: 'N2' };
+  const laterRevival: GameEvent = { ...revival, id: 'later-revival', phaseId: 'D2' };
+  const separateRevival = removeLifeEvent({
+    ...game, events: [laterRevival, otherDeath, laterDeath, execution],
+  }, execution.id);
+  assert.ok(separateRevival.events.some(event => event.id === laterRevival.id));
+  assert.equal(aliveAt(separateRevival, a.id, 'N2'), false);
+  assert.equal(aliveAt(separateRevival, a.id, 'D2'), true);
+
+  const undoneRevival = removeLifeEvent(game, revival.id);
+  assert.equal(aliveAt(undoneRevival, a.id, 'D2'), false);
+  const survived: GameEvent = { ...execution, id: 'survived', phaseId: 'D2', result: 'survived' };
+  const withSurvived = { ...game, events: [execution, survived] };
+  assert.equal(aliveAt(withSurvived, a.id, 'D2'), false);
 });
 
 test('three editions and their Traveller images are available locally', () => {

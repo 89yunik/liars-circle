@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MemoEditor, Portrait, Sheet } from './Editors.tsx';
 import {
-  aliveAt, id, MAX_PLAYERS, MIN_PLAYERS, nextSequence, phaseAt, phaseIndex, putRecord, removePlayer, writeMemo,
+  aliveAt, byTime, id, MAX_PLAYERS, MIN_PLAYERS, nextSequence, phaseAt, phaseIndex, putRecord, removeLifeEvent, removePlayer, writeMemo,
   type EventResult, type Game, type GameEvent, type MemoTarget, type PhaseId, type Whisper,
 } from './model.ts';
 import { characters } from './scripts.ts';
@@ -64,6 +64,11 @@ export function Table({ game, commit, flush, end }: {
   const selected = popup && 'playerId' in popup ? game.players.find(player => player.id === popup.playerId) : undefined;
   const selectedAlive = selected && aliveAt(game, selected.id, phase);
   const selectedExecuted = selected && game.events.some(event => isExecution(event, selected.id));
+  const selectedLifeEvent = selected && game.events.filter(event =>
+    event.playerId === selected.id && event.phaseId === phase && event.kind !== 'execution').sort(byTime).at(-1);
+  const lifeLabel = selectedLifeEvent
+    ? selectedLifeEvent.kind === 'revival' ? '부활 취소' : '사망 취소'
+    : selectedAlive ? '사망' : '부활';
   const name = (key: string) => game.players.find(player => player.id === key)?.name ?? '—';
   const close = () => { flush(); setPopup(null); };
   const saveMemo = (phaseId: PhaseId, target: MemoTarget, text: string) =>
@@ -109,9 +114,12 @@ export function Table({ game, commit, flush, end }: {
   }
 
   function recordPlayerEvent(playerId: string, action: 'execution' | 'life') {
-    const matchesExecution = (event: GameEvent) => isExecution(event, playerId);
-    if (action === 'execution' && game.events.some(matchesExecution)) {
-      commit({ ...game, events: game.events.filter(event => !matchesExecution(event)) });
+    const existing = action === 'execution'
+      ? game.events.find(event => isExecution(event, playerId))
+      : game.events.filter(event => event.playerId === playerId && event.phaseId === phase &&
+        event.kind !== 'execution').sort(byTime).at(-1);
+    if (existing) {
+      commit(removeLifeEvent(game, existing.id));
       close();
       return;
     }
@@ -266,7 +274,7 @@ export function Table({ game, commit, flush, end }: {
       message="게임을 종료하고 저장된 기록을 삭제할까요?" close={close} confirm={end} />}
     {popup?.kind === 'player' && selected && <Sheet centered compact title={selected.name} close={close}>
       <div className="stack player-menu">
-        {([['profile', '플레이어'], ['character', '캐릭터'], ['memo', '메모'], ['nomination', '지명'], ['whisper', '밀담'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', selectedAlive ? '사망' : '부활']] as const)
+        {([['profile', '플레이어'], ['character', '캐릭터'], ['memo', '메모'], ['nomination', '지명'], ['whisper', '밀담'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', lifeLabel]] as const)
           .filter(([kind]) => isDay || (kind !== 'nomination' && kind !== 'whisper' && kind !== 'execution'))
           .map(([kind, label]) => <button key={kind} className="record-link"
             disabled={kind === 'nomination' && !canNominate(selected.id)} onClick={() => {

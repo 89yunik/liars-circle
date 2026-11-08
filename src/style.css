@@ -158,7 +158,7 @@ button.token {
 }
 .token-art { display: grid; place-items: center; width: 100%; height: 100%; }
 .token-art img { width: 100%; height: 100%; object-fit: contain; }
-.token:is(.dead, .executed) { border-style: dashed; }
+.token.dead { border-style: dashed; }
 .token.dead .token-art { opacity: .45; }
 .token.selected { outline: 3px solid var(--character-border); outline-offset: 3px; }
 .token-label {

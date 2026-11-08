@@ -118,7 +118,7 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
           onPointerMove={drag.move}
           onPointerUp={event => drag.finish(event)}
           onPointerCancel={event => drag.finish(event, true)}
-          onLostPointerCapture={event => drag.finish(event, true)}
+          onLostPointerCapture={drag.lostCapture}
         >
           <button data-team={role?.team} className={`token ${aliveNow ? '' : 'dead'} ${executed ? 'executed' : ''} ${selectedId === player.id ? 'selected' : ''}`}
           aria-disabled={selectSource === 'votes' && !canNominate(player.id)}

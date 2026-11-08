@@ -4,6 +4,7 @@ type Position = { x: number; y: number };
 type Drag = {
   playerId: string;
   pointerId: number;
+  captureTarget: Element;
   startX: number;
   startY: number;
   origin: Position;
@@ -21,10 +22,13 @@ export function usePlayerDrag(
   const [preview, setPreview] = useState<{ playerId: string; position: Position } | null>(null);
 
   function start(event: PointerEvent<HTMLElement>, playerId: string, position: Position) {
-    if (!event.isPrimary || event.button !== 0) return;
+    if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
     suppressClick.current = false;
+    const captureTarget = event.target instanceof Element ? event.target : event.currentTarget;
+    // Keep touch's implicit capture on the same element throughout the gesture.
+    captureTarget.setPointerCapture(event.pointerId);
     gesture.current = {
-      playerId, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY,
+      playerId, pointerId: event.pointerId, captureTarget, startX: event.clientX, startY: event.clientY,
       origin: position, position, moved: false,
     };
   }
@@ -35,7 +39,7 @@ export function usePlayerDrag(
     const dx = event.clientX - drag.startX;
     const dy = event.clientY - drag.startY;
     if (!drag.moved && Math.hypot(dx, dy) < 6) return;
-    if (!drag.moved) event.currentTarget.setPointerCapture(event.pointerId);
+    event.preventDefault();
     drag.moved = true;
     suppressClick.current = true;
     const clamp = (value: number) => Math.max(-1, Math.min(1, value));
@@ -49,13 +53,18 @@ export function usePlayerDrag(
   function finish(event: PointerEvent<HTMLElement>, cancelled = false) {
     const drag = gesture.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
+    if (drag.moved && !cancelled) move(event);
     gesture.current = null;
     setPreview(null);
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    if (drag.captureTarget.hasPointerCapture(event.pointerId)) {
+      drag.captureTarget.releasePointerCapture(event.pointerId);
     }
     if (drag.moved && !cancelled) save(drag.playerId, drag.position);
   }
 
-  return { preview, suppressClick, start, move, finish };
+  function lostCapture(event: PointerEvent<HTMLElement>) {
+    if (event.target === gesture.current?.captureTarget) finish(event, true);
+  }
+
+  return { preview, suppressClick, start, move, finish, lostCapture };
 }

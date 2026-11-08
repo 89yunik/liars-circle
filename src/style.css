@@ -154,6 +154,7 @@ button.board-action { flex: none; display: grid; place-items: center; color: #f2
   top: calc(50% + (50% - var(--seat-inset) - 5px) * var(--seat-y));
   position: absolute; transform: translate(-50%, -50%); z-index: 1;
   width: var(--token-size); height: var(--token-size); touch-action: none; user-select: none;
+  -webkit-user-select: none; -webkit-touch-callout: none;
 }
 .token-seat.dragging { z-index: 4; cursor: grabbing; }
 button.token {

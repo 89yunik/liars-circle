@@ -1,3 +1,4 @@
+import { flushSync } from 'react-dom';
 import { useEffect, useRef, useState } from 'react';
 import { MemoEditor, Portrait, Sheet } from './Editors.tsx';
 import {
@@ -24,21 +25,24 @@ export function Table({ game, commit, flush, end }: {
   const [history, setHistory] = useState<HistoryKind | null>(null);
   const [vote, setVote] = useState<VoteDraft | null>(null);
   const [whisper, setWhisper] = useState<Whisper | null>(null);
+  const [selectSource, setSelectSource] = useState<HistoryKind | null>(null);
   const whispers = game.whispers ?? [];
-  const selecting = vote !== null || whisper !== null;
+  const selecting = vote !== null || whisper !== null || selectSource !== null;
   useEffect(() => {
     if (!selecting) return;
     function dismissOutside(event: MouseEvent) {
-      if (event.target instanceof Element && event.target.closest('.token, .vote-complete')) return;
+      if (event.target instanceof Element && event.target.closest('.token, .vote-complete, .token-label, .record-start')) return;
       event.preventDefault();
       event.stopPropagation();
       setVote(null);
       setWhisper(null);
+      setSelectSource(null);
     }
     function dismissOnEscape(event: KeyboardEvent) {
       if (event.key !== 'Escape') return;
       setVote(null);
       setWhisper(null);
+      setSelectSource(null);
     }
     document.addEventListener('click', dismissOutside, true);
     document.addEventListener('keydown', dismissOnEscape);
@@ -88,6 +92,7 @@ export function Table({ game, commit, flush, end }: {
     if (!canNominate(nominatorId)) return;
     setPopup(null);
     setHistory(null);
+    setSelectSource(null);
     setVote({
       id: id(), phaseId: phase, sequence: nextSequence([...game.events, ...game.nominations], phase),
       nominatorId, nomineeId: '', voterIds: [], step: 1,
@@ -99,6 +104,7 @@ export function Table({ game, commit, flush, end }: {
     const day = phase as Whisper['phaseId'];
     setPopup(null);
     setHistory(null);
+    setSelectSource(null);
     setWhisper({ id: id(), phaseId: day, sequence: nextSequence(whispers, day), playerId, partnerIds: [] });
   }
 
@@ -106,7 +112,7 @@ export function Table({ game, commit, flush, end }: {
     if (!whisper?.partnerIds.length) return;
     commit({ ...game, whispers: putRecord(whispers, whisper) });
     setWhisper(null);
-    setHistory('whispers');
+    setHistory(null);
   }
 
   function isExecution(event: GameEvent, playerId: string) {
@@ -158,7 +164,24 @@ export function Table({ game, commit, flush, end }: {
     }, true);
   }
 
+  function openMemo(playerId?: string) {
+    // Mount and focus within the tap event so mobile browsers can open the keyboard.
+    flushSync(() => {
+      setHistory(null);
+      setPopup(playerId ? { kind: 'memo', playerId } : { kind: 'general' });
+    });
+  }
+
+  function beginSelection(kind: HistoryKind) {
+    setHistory(null);
+    setVote(null);
+    setWhisper(null);
+    setSelectSource(kind);
+  }
+
   function tap(playerId: string) {
+    if (selectSource === 'votes') { startVote(playerId); return; }
+    if (selectSource === 'whispers') { startWhisper(playerId); return; }
     if (whisper) {
       if (playerId !== whisper.playerId) setWhisper({
         ...whisper,
@@ -166,7 +189,7 @@ export function Table({ game, commit, flush, end }: {
       });
       return;
     }
-    if (!vote) { setPopup({ kind: 'player', playerId }); return; }
+    if (!vote) { setPopup({ kind: 'character', playerId }); return; }
     if (vote.step === 1) setVote({ ...vote, step: 2, nomineeId: playerId });
     else setVote({
       ...vote,
@@ -185,7 +208,7 @@ export function Table({ game, commit, flush, end }: {
       ...record, ghostOverrides: Object.keys(overrides).length ? overrides : undefined,
     }) });
     setVote(null);
-    setHistory('votes');
+    setHistory(null);
   }
 
   function removeLatestPhase() {
@@ -253,13 +276,14 @@ export function Table({ game, commit, flush, end }: {
       </button>
     </header>
     <TableBoard game={game} phase={phase} roles={roles} selectedId={selected?.id} vote={vote} whisper={whisper}
+      tap={tap} openMemo={openMemo} selecting={selecting} selectSource={selectSource}
+      canNominate={canNominate}
+      openPlayer={playerId => setPopup({ kind: 'player', playerId })}
       movePlayer={(playerId, seat) => commit(reorderPlayer(game, playerId, seat))}
-      tap={tap} completeVote={completeVote} completeWhisper={completeWhisper} />
+      completeVote={completeVote} completeWhisper={completeWhisper} />
     <TableHistory nominations={game.nominations} whispers={whispers} history={history} selecting={selecting}
-      setHistory={setHistory} name={name} openMemo={() => {
-        setHistory(null);
-        setPopup({ kind: 'general' });
-      }}
+      setHistory={setHistory} name={name} openMemo={() => openMemo()}
+      startSelection={beginSelection} isDay={isDay}
       editVote={record => {
         openRecordPhase(record.phaseId);
         setVote({ ...record, step: 1 });
@@ -275,13 +299,11 @@ export function Table({ game, commit, flush, end }: {
       message="게임을 종료하고 저장된 기록을 삭제할까요?" close={close} confirm={end} />}
     {popup?.kind === 'player' && selected && <Sheet centered compact title={selected.name} close={close}>
       <div className="stack player-menu">
-        {([['profile', '플레이어'], ['character', '캐릭터'], ['memo', '메모'], ['nomination', '지명'], ['whisper', '밀담'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', lifeLabel]] as const)
-          .filter(([kind]) => isDay || (kind !== 'nomination' && kind !== 'whisper' && kind !== 'execution'))
+        {([['profile', '플레이어'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', lifeLabel]] as const)
+          .filter(([kind]) => isDay || kind !== 'execution')
           .map(([kind, label]) => <button key={kind} className="record-link"
-            disabled={kind === 'nomination' && !canNominate(selected.id)} onClick={() => {
-            if (kind === 'nomination') startVote(selected.id);
-            else if (kind === 'whisper') startWhisper(selected.id);
-            else if (kind === 'execution' || kind === 'life') recordPlayerEvent(selected.id, kind);
+            onClick={() => {
+            if (kind === 'execution' || kind === 'life') recordPlayerEvent(selected.id, kind);
             else setPopup({ kind, playerId: selected.id });
           }}>
             <MenuIcon kind={kind === 'life' && !selectedAlive ? 'revival' : kind} />
@@ -327,7 +349,7 @@ export function Table({ game, commit, flush, end }: {
           const memoPhase = phaseAt(index);
           return <div key={memoPhase} className={memoPhase === phase ? 'viewed-phase' : undefined}>
             <MemoEditor game={game} phase={memoPhase} target={selected ? { target: 'player', playerId: selected.id } : { target: 'general' }}
-              label={memoPhase} rows={1} save={saveMemo} />
+              label={memoPhase} autoFocus={memoPhase === phase} rows={1} save={saveMemo} />
           </div>;
         })}
       </div>

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { usePlayerDrag } from './usePlayerDrag.ts';
+import { MenuIcon } from './TableControls.tsx';
 import { Portrait } from './Editors.tsx';
 import { aliveAt, evenlySpacedSeats, seatPosition, type Character, type Game, type Nomination, type PhaseId, type Whisper } from './model.ts';
 
@@ -11,7 +12,7 @@ const setupCounts = [
 ];
 const setupRoles = ['주민', '외지인', '하수인', '악마'];
 
-export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap, movePlayer, completeVote, completeWhisper }: {
+export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap, openMemo, openPlayer, selecting, selectSource, canNominate, movePlayer, completeVote, completeWhisper }: {
   game: Game;
   phase: PhaseId;
   roles: Character[];
@@ -19,11 +20,15 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
   vote: VoteDraft | null;
   whisper: Whisper | null;
   tap: (playerId: string) => void;
+  openMemo: (playerId: string) => void;
+  openPlayer: (playerId: string) => void;
+  selecting: boolean;
+  selectSource: 'votes' | 'whispers' | null;
+  canNominate: (playerId: string) => boolean;
   movePlayer: (playerId: string, seat: number) => void;
   completeVote: () => void;
   completeWhisper: () => void;
 }) {
-  const selecting = vote !== null || whisper !== null;
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSize, setTableSize] = useState({ width: 0, height: 0 });
   useLayoutEffect(() => {
@@ -76,7 +81,9 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
   }}>
     <div className="table" ref={tableRef} style={{ '--diameter': `${diameter}px`, '--token-ratio': tokenRatio } as CSSProperties}>
       <div className="table-center">
-        {vote ? (vote.step === 2
+        {selectSource ? <span className="vote-prompt" role="status">
+          {selectSource === 'votes' ? '지명자 선택' : '밀담 기준 플레이어 선택'}
+        </span> : vote ? (vote.step === 2
           ? <button className="primary vote-complete" onClick={completeVote}>완료 · {vote.countedVotes ?? vote.voterIds.length}표</button>
           : <span className="vote-prompt" role="status">피지명자 선택</span>)
           : whisper ? <>
@@ -114,20 +121,34 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
           onLostPointerCapture={event => drag.finish(event, true)}
         >
           <button data-team={role?.team} className={`token ${aliveNow ? '' : 'dead'} ${executed ? 'executed' : ''} ${selectedId === player.id ? 'selected' : ''}`}
+          aria-disabled={selectSource === 'votes' && !canNominate(player.id)}
           aria-pressed={whisper && !whisperSource ? !!whisperPartner : undefined}
           aria-label={`${player.name}, ${aliveNow ? '생존' : '사망'}${executed ? ', 처형' : ''}${role ? ', ' + role.name : ''}${nominator ? ', 지명자' : ''}${nominee ? ', 피지명자' : ''}${voter ? ', 투표자' : ''}${whisperSource ? ', 밀담 기준 플레이어' : ''}`}
           title={role ? `${player.name} · ${role.name}` : player.name}
           onClick={() => tap(player.id)}>
           <span className="token-art"><Portrait key={role?.image} src={role?.image} /></span>
-          <span className={Array.from(player.name).length > 5 ? 'token-label long-name' : 'token-label'}>
-            {player.name}{player.traveller && <sup> T</sup>}
-          </span>
           {statusMark && <span className="token-status" aria-hidden="true">{statusMark}</span>}
           {(nominator || nominee || voter || whisperSource || whisperPartner) && <span className="vote-marks" aria-hidden="true">
             {nominator && <i className="mark-vote">지</i>}{nominee && <i className="mark-vote">피</i>}{voter && <i className="mark-vote">표</i>}
             {whisperSource && <i className="mark-whisper">밀</i>}{whisperPartner && <i className="mark-whisper">✓</i>}
           </span>}
           </button>
+          <div className="token-caption">
+            <button type="button"
+              aria-label={`${player.name} · 플레이어 메뉴`}
+              className={Array.from(player.name).length > 5 ? 'token-label long-name' : 'token-label'}
+              onClick={() => {
+                if (selecting) tap(player.id);
+                else openPlayer(player.id);
+              }}>
+              {player.name}{player.traveller && <sup> T</sup>}
+            </button>
+            <button type="button" className="token-memo" disabled={selecting}
+              aria-label={`${player.name} · ${phase} 메모`} title="메모"
+              onClick={() => openMemo(player.id)}>
+              <MenuIcon kind="memo" />
+            </button>
+          </div>
         </div>;
       })}
     </div>

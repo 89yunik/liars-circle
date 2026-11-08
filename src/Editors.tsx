@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { sameTarget, type Game, type MemoTarget, type PhaseId } from './model.ts';
 
 export function Sheet({ title, close, centered, compact, memo, children }: {
   title: string; centered?: boolean; compact?: boolean; memo?: boolean; close: () => void; children: ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = dialog.current;
     if (!element) return;
-    if (memo) element.setAttribute('autofocus', '');
+    const initialField = element.querySelector<HTMLTextAreaElement>('textarea[data-initial-focus="true"]');
+    initialField?.setAttribute('autofocus', '');
     element.showModal();
 
     const viewport = memo ? window.visualViewport : null;
@@ -49,13 +50,13 @@ export function Portrait({ src, fallback = null }: { src?: string; fallback?: Re
   return src && !failed ? <img src={src} alt="" onError={() => setFailed(true)} /> : fallback;
 }
 
-export function MemoEditor({ game, phase, target, label, rows = 3, save }: {
-  game: Game; phase: PhaseId; target: MemoTarget; label: string; rows?: number;
+export function MemoEditor({ game, phase, target, label, rows = 3, autoFocus = false, save }: {
+  game: Game; phase: PhaseId; target: MemoTarget; label: string; rows?: number; autoFocus?: boolean;
   save: (phase: PhaseId, target: MemoTarget, text: string) => void;
 }) {
   const memo = game.memos.find(item => item.phaseId === phase && sameTarget(item, target));
   return <div className="memo-editor">
-    <label>{label}<textarea rows={rows} value={memo?.text ?? ''} placeholder="메모를 입력하세요"
+    <label>{label}<textarea rows={rows} data-initial-focus={autoFocus} value={memo?.text ?? ''}
       onChange={event => save(phase, target, event.target.value)} /></label>
   </div>;
 }

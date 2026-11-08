@@ -165,12 +165,22 @@ button.token {
 .token.dead { border-style: dashed; }
 .token.dead .token-art { opacity: .45; }
 .token.selected { outline: 3px solid var(--character-border); outline-offset: 3px; }
-.token-label {
+.token-caption {
   position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-  width: max-content; max-width: calc(100% + 12px); overflow-wrap: anywhere;
-  padding: 1px 5px; background: #17121e; border-radius: 5px;
-  font-size: .72rem; line-height: 1.25; font-weight: 750;
+  display: flex; align-items: center; gap: 2px;
+  width: max-content; max-width: calc(100% + 16px);
 }
+.token-label {
+  min-width: 0; overflow-wrap: anywhere;
+  padding: 1px 5px; background: #17121e; border-radius: 5px;
+  min-height: 0; font-size: .72rem; line-height: 1.25; font-weight: 750;
+}
+.token-memo {
+  display: grid; place-items: center; flex: none; width: 20px; min-height: 24px;
+  padding: 0; border: 0; border-radius: 4px; background: #10101a; color: var(--gold);
+}
+.token-memo svg { width: 14px; height: 14px; }
+.token[aria-disabled=true] { opacity: .45; }
 .token-label.long-name { font-size: .625rem; }
 .vote-marks { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; }
 .vote-marks i { font: 700 .65rem system-ui; border: 2px solid currentColor; border-radius: 50%; width: 18px; height: 18px; background: #181520; }
@@ -242,6 +252,10 @@ dialog.table-dialog::backdrop { background: #08081366; }
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); position: relative; flex: none;
   border: 1px solid var(--history-border); border-radius: 12px; background: #14131e;
 }
+.record-actions { display: flex; min-width: 0; }
+.record-actions + .record-actions { border-left: 1px solid var(--line); }
+.record-actions .record-start { flex: 1; min-width: 0; }
+.record-actions .record-log { padding-inline: 6px; min-width: 28px; }
 button.history-button {
   border: 0; padding-inline: 4px; background: #1d1b29;
   display: flex; align-items: center; justify-content: center; gap: 4px;

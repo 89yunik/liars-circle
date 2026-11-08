@@ -6,12 +6,14 @@ export type HistoryKind = 'votes' | 'whispers';
 
 export function TableHistory({
   nominations, whispers, history, selecting, setHistory, name, openMemo,
-  editVote, editWhisper, deleteVote, deleteWhisper,
+  editVote, editWhisper, deleteVote, deleteWhisper, startSelection, isDay,
 }: {
   nominations: Nomination[];
   whispers: Whisper[];
   history: HistoryKind | null;
   selecting: boolean;
+  isDay: boolean;
+  startSelection: (kind: HistoryKind) => void;
   setHistory: (history: HistoryKind | null) => void;
   name: (id: string) => string;
   openMemo: () => void;
@@ -22,12 +24,18 @@ export function TableHistory({
 }) {
   return <section className="vote-history">
     {([['votes', '지명·투표', 'nomination', nominations.length], ['whispers', '밀담', 'whisper', whispers.length]] as const)
-      .map(([kind, label, icon, total]) => <button key={kind} className="history-button" disabled={!total}
-        aria-label={`${label} ${total}건`} title={label}
-        aria-expanded={total > 0 && history === kind} aria-controls={`${kind}-history-content`}
-        onClick={() => setHistory(history === kind ? null : kind)}>
-        <MenuIcon kind={icon} /> {label} <small aria-hidden="true">{total}</small>
-      </button>)}
+      .map(([kind, label, icon, total]) => <div className="record-actions" key={kind}>
+        <button className="history-button record-start" disabled={!isDay}
+          aria-label={kind === 'votes' ? '지명자 선택' : '밀담 인원 선택'} onClick={() => startSelection(kind)}>
+          <MenuIcon kind={icon} /> {label}
+        </button>
+        <button className="history-button record-log" disabled={!total || selecting}
+          aria-label={`${label} 기록 ${total}건`} title={`${label} 기록`}
+          aria-expanded={history === kind} aria-controls={`${kind}-history-content`}
+          onClick={() => setHistory(history === kind ? null : kind)}>
+          <small>{total}</small>
+        </button>
+      </div>)}
     <button className="history-button" aria-label="기타" onClick={openMemo}><MenuIcon kind="memo" /> 기타</button>
     <HistoryPanel kind="votes" hidden={history !== 'votes' || selecting} records={nominations}
       edit={editVote} remove={deleteVote}

@@ -10,7 +10,7 @@ export function Setup({ library, update, start, blocked, libraryBlocked }: {
   libraryBlocked: boolean;
 }) {
   const [seats, setSeats] = useState(Array.from({ length: MAX_PLAYERS }, () => ({ name: '', traveller: false })));
-  const [count, setCount] = useState(8);
+  const [count, setCount] = useState(15);
   const [sheet, setSheet] = useState('tb');
   const [error, setError] = useState('');
   const importInput = useRef<HTMLInputElement>(null);

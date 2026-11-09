@@ -14,7 +14,7 @@ const setupCounts = [
 ];
 const setupRoles = ['주민', '외지인', '하수인', '악마'];
 
-export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap, openMemo, openPlayer, selecting, selectSource, canNominate, movePlayer, completeVote, completeWhisper }: {
+export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap, openMemo, openPlayer, selecting, selectSource, movePlayer, completeVote, completeWhisper }: {
   game: Game;
   phase: PhaseId;
   roles: Character[];
@@ -26,7 +26,6 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
   openPlayer: (playerId: string) => void;
   selecting: boolean;
   selectSource: 'votes' | 'whispers' | null;
-  canNominate: (playerId: string) => boolean;
   movePlayer: (playerId: string, seat: number) => void;
   completeVote: () => void;
   completeWhisper: () => void;
@@ -123,7 +122,6 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
           onTouchStart={event => { if (!selecting) drag.startTouch(event, player.id, savedPosition); }}
         >
           <button className={`token ${aliveNow ? '' : 'dead'} ${selectedId === player.id ? 'selected' : ''}`}
-          aria-disabled={selectSource === 'votes' && !canNominate(player.id)}
           aria-pressed={whisper && !whisperSource ? !!whisperPartner : undefined}
           aria-label={[player.name, t(aliveNow ? '생존' : '사망'), executed && t('처형'), role?.name,
             alignment && t(alignment === 'good' ? '선' : '악'), nominator && t('지명자'), nominee && t('피지명자'),

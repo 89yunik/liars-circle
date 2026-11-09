@@ -30,7 +30,7 @@ export function Table({ game, commit, flush, end }: {
   const [history, setHistory] = useState<HistoryKind | null>(null);
   const phase = view ?? game.currentPhase;
   const selection = useTableSelection(game, phase, commit);
-  const { vote, whisper, selectSource, selecting, canNominate } = selection;
+  const { vote, whisper, selectSource, selecting } = selection;
   const whispers = game.whispers ?? [];
   useEffect(() => {
     if (!history) return;
@@ -189,7 +189,6 @@ export function Table({ game, commit, flush, end }: {
     </header>
     <TableBoard game={game} phase={phase} roles={roles} selectedId={selected?.id} vote={vote} whisper={whisper}
       tap={tap} openMemo={openMemo} selecting={selecting} selectSource={selectSource}
-      canNominate={canNominate}
       openPlayer={playerId => setPopup({ kind: 'player', playerId })}
       movePlayer={(playerId, seat) => commit(reorderPlayer(game, playerId, seat))}
       completeVote={selection.completeVote} completeWhisper={selection.completeWhisper} />

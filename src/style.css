@@ -208,7 +208,6 @@ button.token {
   filter: drop-shadow(1px 0 0 #10101a) drop-shadow(-1px 0 0 #10101a)
     drop-shadow(0 1px 0 #10101a) drop-shadow(0 -1px 0 #10101a);
 }
-.token[aria-disabled=true] { opacity: .45; }
 .token-label.long-name { font-size: .625rem; }
 .vote-marks { position: absolute; z-index: 3; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; pointer-events: none; }
 .token-memo:disabled { pointer-events: none; }

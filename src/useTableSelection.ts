@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { aliveAt, id, nextSequence, putRecord, type Game, type Nomination, type PhaseId, type Whisper } from './model.ts';
+import { id, nextSequence, putRecord, type Game, type Nomination, type PhaseId, type Whisper } from './model.ts';
 
 export type RecordKind = 'votes' | 'whispers';
 export type VoteDraft = Nomination & { step: 1 | 2 };
@@ -35,12 +35,9 @@ export function useTableSelection(game: Game, phase: PhaseId, commit: (game: Gam
     };
   }, [selecting]);
 
-  const canNominate = (playerId: string) => phase.startsWith('D') && aliveAt(game, playerId, phase) &&
-    !game.nominations.some(record => record.phaseId === phase && record.nominatorId === playerId);
-
   function tap(playerId: string) {
     if (!selection) return false;
-    if (selectSource === 'votes' && canNominate(playerId)) {
+    if (selectSource === 'votes' && phase.startsWith('D')) {
       setSelection({ kind: 'vote', draft: {
         id: id(), phaseId: phase, sequence: nextSequence([...game.events, ...game.nominations], phase),
         nominatorId: playerId, nomineeId: '', voterIds: [], step: 1,
@@ -78,7 +75,7 @@ export function useTableSelection(game: Game, phase: PhaseId, commit: (game: Gam
   }
 
   return {
-    vote, whisper, selectSource, selecting, canNominate, tap, completeVote, completeWhisper,
+    vote, whisper, selectSource, selecting, tap, completeVote, completeWhisper,
     begin: (source: RecordKind) => setSelection({ kind: 'source', source }),
     editVote: (record: Nomination) => setSelection({ kind: 'vote', draft: { ...record, step: 1 } }),
     editWhisper: (record: Whisper) => setSelection({ kind: 'whisper', draft: record }),

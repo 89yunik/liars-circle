@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { isImageUrl } from './validation.ts';
 import { sameTarget, type Game, type MemoTarget, type PhaseId } from './model.ts';
 
 export function Sheet({ title, close, centered, compact, memo, children }: {
@@ -47,7 +48,7 @@ export function Sheet({ title, close, centered, compact, memo, children }: {
 
 export function Portrait({ src, fallback = null }: { src?: string; fallback?: ReactNode }) {
   const [failed, setFailed] = useState(false);
-  return src && !failed ? <img src={src} alt="" onError={() => setFailed(true)} /> : fallback;
+  return src && isImageUrl(src) && !failed ? <img src={src} alt="" referrerPolicy="no-referrer" onError={() => setFailed(true)} /> : fallback;
 }
 
 export function MemoEditor({ game, phase, target, label, rows = 3, autoFocus = false, save }: {

@@ -4,11 +4,12 @@ import { flushSync } from 'react-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MemoEditor, Portrait, Sheet } from './Editors.tsx';
 import {
-  aliveAt, byTime, id, MAX_PLAYERS, MIN_PLAYERS, nextSequence, phaseAt, phaseIndex, playerAlignment, putRecord, removeLifeEvent, removePlayer, reorderPlayer, writeMemo,
-  type EventResult, type Game, type GameEvent, type MemoTarget, type PhaseId, type Whisper,
+  aliveAt, id, MAX_PLAYERS, MAX_PHASES, MIN_PLAYERS, phaseAt, phaseIndex, playerAlignment, playerEventsAt, removePlayer, reorderPlayer, togglePlayerEvent, writeMemo,
+  type Game, type MemoTarget, type PhaseId,
 } from './model.ts';
 import { characters } from './scripts.ts';
-import { TableBoard, type VoteDraft } from './TableBoard.tsx';
+import { useTableSelection } from './useTableSelection.ts';
+import { TableBoard } from './TableBoard.tsx';
 import { Confirmation, DeleteButton, MenuIcon } from './TableControls.tsx';
 import { TableHistory, type HistoryKind } from './TableHistory.tsx';
 import { ScriptReference } from './ScriptReference.tsx';
@@ -28,34 +29,9 @@ export function Table({ game, commit, flush, end }: {
   const [popup, setPopup] = useState<Popup | null>(null);
   const [history, setHistory] = useState<HistoryKind | null>(null);
   const phase = view ?? game.currentPhase;
-  const [vote, setVote] = useState<VoteDraft | null>(null);
-  const [whisper, setWhisper] = useState<Whisper | null>(null);
-  const [selectSource, setSelectSource] = useState<HistoryKind | null>(null);
+  const selection = useTableSelection(game, phase, commit);
+  const { vote, whisper, selectSource, selecting, canNominate } = selection;
   const whispers = game.whispers ?? [];
-  const selecting = vote !== null || whisper !== null || selectSource !== null;
-  useEffect(() => {
-    if (!selecting) return;
-    function dismissOutside(event: MouseEvent) {
-      if (event.target instanceof Element && event.target.closest('.token, .vote-complete, .token-label, .record-start')) return;
-      event.preventDefault();
-      event.stopPropagation();
-      setVote(null);
-      setWhisper(null);
-      setSelectSource(null);
-    }
-    function dismissOnEscape(event: KeyboardEvent) {
-      if (event.key !== 'Escape') return;
-      setVote(null);
-      setWhisper(null);
-      setSelectSource(null);
-    }
-    document.addEventListener('click', dismissOutside, true);
-    document.addEventListener('keydown', dismissOnEscape);
-    return () => {
-      document.removeEventListener('click', dismissOutside, true);
-      document.removeEventListener('keydown', dismissOnEscape);
-    };
-  }, [selecting]);
   useEffect(() => {
     if (!history) return;
     function dismissHistory(event: MouseEvent) {
@@ -66,15 +42,13 @@ export function Table({ game, commit, flush, end }: {
     return () => document.removeEventListener('click', dismissHistory, true);
   }, [history]);
   const isDay = phase.startsWith('D');
-  const canNominate = (playerId: string) => isDay && aliveAt(game, playerId, phase) &&
-    !game.nominations.some(record => record.phaseId === phase && record.nominatorId === playerId);
   const roles = useMemo(() => characters(game.script).map(role => localizeCharacter(role, language)), [game.script, language]);
   const selected = popup && 'playerId' in popup ? game.players.find(player => player.id === popup.playerId) : undefined;
   const selectedAlive = selected && aliveAt(game, selected.id, phase);
   const selectedAlignment = selected && playerAlignment(selected, roles.find(role => role.id === selected.characterId));
-  const selectedExecuted = selected && game.events.some(event => isExecution(event, selected.id));
-  const selectedLifeEvent = selected && game.events.filter(event =>
-    event.playerId === selected.id && event.phaseId === phase && event.kind !== 'execution').sort(byTime).at(-1);
+  const selectedEvents = selected ? playerEventsAt(game, selected.id, phase) : [];
+  const selectedExecuted = selectedEvents.some(event => event.kind === 'execution');
+  const selectedLifeEvent = selectedEvents.filter(event => event.kind !== 'execution').at(-1);
   const lifeLabel = selectedLifeEvent
     ? selectedLifeEvent.kind === 'revival' ? '부활 취소' : '사망 취소'
     : selectedAlive ? '사망' : '부활';
@@ -84,7 +58,9 @@ export function Table({ game, commit, flush, end }: {
     commit(writeMemo(game, phaseId, target, text), true);
   const navigate = (offset: number) => {
     setShowPhaseDelete(false);
-    const next = phaseAt(phaseIndex(phase) + offset);
+    const nextIndex = phaseIndex(phase) + offset;
+    if (nextIndex < 0 || nextIndex >= MAX_PHASES) return;
+    const next = phaseAt(nextIndex);
     if (offset === 1 && !view) commit({ ...game, currentPhase: next });
     else setView(next === game.currentPhase ? null : next);
   };
@@ -93,52 +69,8 @@ export function Table({ game, commit, flush, end }: {
     setHistory(null);
   }
 
-  function startVote(nominatorId: string) {
-    if (!canNominate(nominatorId)) return;
-    setPopup(null);
-    setHistory(null);
-    setSelectSource(null);
-    setVote({
-      id: id(), phaseId: phase, sequence: nextSequence([...game.events, ...game.nominations], phase),
-      nominatorId, nomineeId: '', voterIds: [], step: 1,
-    });
-  }
-
-  function startWhisper(playerId: string) {
-    if (!phase.startsWith('D')) return;
-    const day = phase as Whisper['phaseId'];
-    setPopup(null);
-    setHistory(null);
-    setSelectSource(null);
-    setWhisper({ id: id(), phaseId: day, sequence: nextSequence(whispers, day), playerId, partnerIds: [] });
-  }
-
-  function completeWhisper() {
-    if (!whisper?.partnerIds.length) return;
-    commit({ ...game, whispers: putRecord(whispers, whisper) });
-    setWhisper(null);
-    setHistory(null);
-  }
-
-  function isExecution(event: GameEvent, playerId: string) {
-    return event.kind === 'execution' && event.playerId === playerId && event.phaseId === phase;
-  }
-
   function recordPlayerEvent(playerId: string, action: 'execution' | 'life') {
-    const existing = action === 'execution'
-      ? game.events.find(event => isExecution(event, playerId))
-      : game.events.filter(event => event.playerId === playerId && event.phaseId === phase &&
-        event.kind !== 'execution').sort(byTime).at(-1);
-    if (existing) {
-      commit(removeLifeEvent(game, existing.id));
-      close();
-      return;
-    }
-    const result: EventResult = action === 'execution' ? { kind: 'execution', result: 'dead' }
-      : aliveAt(game, playerId, phase) ? { kind: 'death', result: 'dead' } : { kind: 'revival', result: 'alive' };
-    const event: GameEvent = { ...result, id: id(), phaseId: phase, playerId, reason: '',
-      sequence: nextSequence([...game.events, ...game.nominations], phase) };
-    commit({ ...game, events: [...game.events, event] });
+    commit(togglePlayerEvent(game, playerId, phase, action));
     close();
   }
 
@@ -179,42 +111,14 @@ export function Table({ game, commit, flush, end }: {
 
   function beginSelection(kind: HistoryKind) {
     setHistory(null);
-    setVote(null);
-    setWhisper(null);
-    setSelectSource(kind);
+    selection.begin(kind);
   }
 
   function tap(playerId: string) {
-    if (selectSource === 'votes') { startVote(playerId); return; }
-    if (selectSource === 'whispers') { startWhisper(playerId); return; }
-    if (whisper) {
-      if (playerId !== whisper.playerId) setWhisper({
-        ...whisper,
-        partnerIds: toggleParticipant(whisper.partnerIds, playerId),
-      });
-      return;
-    }
-    if (!vote) { setPopup({ kind: 'character', playerId }); return; }
-    if (vote.step === 1) setVote({ ...vote, step: 2, nomineeId: playerId });
-    else setVote({
-      ...vote,
-      voterIds: toggleParticipant(vote.voterIds, playerId),
-    });
+    if (!selection.tap(playerId)) setPopup({ kind: 'character', playerId });
   }
 
   const count = game.players.length;
-
-  function completeVote() {
-    if (!vote || vote.step !== 2) return;
-    const { step: _step, ghostOverrides, ...record } = vote;
-    const overrides = Object.fromEntries(Object.entries(ghostOverrides ?? {})
-      .filter(([playerId]) => record.voterIds.includes(playerId)));
-    commit({ ...game, nominations: putRecord(game.nominations, {
-      ...record, ghostOverrides: Object.keys(overrides).length ? overrides : undefined,
-    }) });
-    setVote(null);
-    setHistory(null);
-  }
 
   function removeLatestPhase() {
     if (selecting || phase === 'N1' || phase !== game.currentPhase) return;
@@ -264,7 +168,7 @@ export function Table({ game, commit, flush, end }: {
               <span className="phase-delete" aria-hidden="true">×</span>
             </button>
           : <strong>{phase}</strong>}
-        <button className={phase === game.currentPhase ? 'icon phase-next-new' : 'icon'} aria-label={t('다음 일자')} onClick={() => navigate(1)}>›</button>
+        <button className={phase === game.currentPhase ? 'icon phase-next-new' : 'icon'} aria-label={t('다음 일자')} disabled={phaseIndex(phase) >= MAX_PHASES - 1} onClick={() => navigate(1)}>›</button>
       </div>
       <button className="icon board-action" aria-label={t('플레이어 추가')}
         title={count >= MAX_PLAYERS ? t('플레이어 추가 · 최대 {count}명', { count: MAX_PLAYERS }) : t('플레이어 추가')}
@@ -288,17 +192,17 @@ export function Table({ game, commit, flush, end }: {
       canNominate={canNominate}
       openPlayer={playerId => setPopup({ kind: 'player', playerId })}
       movePlayer={(playerId, seat) => commit(reorderPlayer(game, playerId, seat))}
-      completeVote={completeVote} completeWhisper={completeWhisper} />
+      completeVote={selection.completeVote} completeWhisper={selection.completeWhisper} />
     <TableHistory nominations={game.nominations} whispers={whispers} history={history} selecting={selecting}
       setHistory={setHistory} name={name} openMemo={() => openMemo()}
       startSelection={beginSelection} isDay={isDay}
       editVote={record => {
         openRecordPhase(record.phaseId);
-        setVote({ ...record, step: 1 });
+        selection.editVote(record);
       }}
       editWhisper={record => {
         openRecordPhase(record.phaseId);
-        setWhisper(record);
+        selection.editWhisper(record);
       }}
       deleteVote={id => commit({ ...game, nominations: game.nominations.filter(record => record.id !== id) })}
       deleteWhisper={id => commit({ ...game, whispers: whispers.filter(record => record.id !== id) })} />
@@ -372,8 +276,4 @@ export function Table({ game, commit, flush, end }: {
 
 function putCharacter(game: Game, playerId: string, characterId?: string) {
   return game.players.map(player => player.id === playerId ? { ...player, characterId } : player);
-}
-
-function toggleParticipant(ids: string[], playerId: string) {
-  return ids.includes(playerId) ? ids.filter(id => id !== playerId) : [...ids, playerId];
 }

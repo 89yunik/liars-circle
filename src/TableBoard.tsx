@@ -4,9 +4,9 @@ import { usePlayerDrag } from './usePlayerDrag.ts';
 import { MenuIcon } from './TableControls.tsx';
 import { Portrait } from './Editors.tsx';
 import { characterImage } from './scripts.ts';
-import { aliveAt, evenlySpacedSeats, playerAlignment, seatPosition, type Character, type Game, type Nomination, type PhaseId, type Whisper } from './model.ts';
+import { aliveAt, evenlySpacedSeats, playerAlignment, seatPosition, type Character, type Game, type PhaseId, type Whisper } from './model.ts';
 
-export type VoteDraft = Nomination & { step: 1 | 2 };
+import type { VoteDraft } from './useTableSelection.ts';
 
 const setupCounts = [
   [3, 0, 1, 1], [3, 1, 1, 1], [5, 0, 1, 1], [5, 1, 1, 1], [5, 2, 1, 1],

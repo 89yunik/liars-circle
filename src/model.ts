@@ -1,5 +1,7 @@
 export const MIN_PLAYERS = 5;
 export const MAX_PLAYERS = 20;
+export const MAX_PHASES = 1000;
+export const MAX_SCRIPT_ENTRIES = 1024;
 
 export type PhaseId = `N${number}` | `D${number}`;
 export const teams = ['townsfolk', 'outsider', 'minion', 'demon', 'traveller', 'fabled', 'loric'] as const;
@@ -28,6 +30,7 @@ export interface Player {
   characterId?: string;
   alignment?: Alignment;
 }
+
 export function playerAlignment(player: Player, character?: Character): Alignment | undefined {
   if (player.alignment) return player.alignment;
   if (character?.team === 'townsfolk' || character?.team === 'outsider') return 'good';
@@ -142,7 +145,7 @@ export function writeMemo(game: Game, phaseId: PhaseId, target: MemoTarget, text
 }
 
 export function nextSequence(items: { phaseId: PhaseId; sequence: number }[], phaseId: PhaseId) {
-  return 1 + Math.max(0, ...items.filter(item => item.phaseId === phaseId).map(item => item.sequence));
+  return 1 + items.reduce((latest, item) => item.phaseId === phaseId ? Math.max(latest, item.sequence) : latest, 0);
 }
 
 export function putRecord<T extends { id: string }>(items: T[], record: T) {
@@ -150,11 +153,29 @@ export function putRecord<T extends { id: string }>(items: T[], record: T) {
 }
 
 export function aliveAt(game: Game, playerId: string, phase: PhaseId, sequence = Infinity) {
-  const latest = game.events.filter(event =>
-    event.playerId === playerId && event.result !== 'survived' &&
-    byTime(event, { phaseId: phase, sequence }) < 0,
-  ).sort(byTime).at(-1);
+  let latest: GameEvent | undefined;
+  for (const event of game.events) {
+    if (event.playerId !== playerId || event.result === 'survived' || byTime(event, { phaseId: phase, sequence }) >= 0) continue;
+    if (!latest || byTime(event, latest) > 0) latest = event;
+  }
   return latest?.result !== 'dead';
+}
+
+export function playerEventsAt(game: Game, playerId: string, phase: PhaseId) {
+  return game.events.filter(event => event.playerId === playerId && event.phaseId === phase).sort(byTime);
+}
+
+export function togglePlayerEvent(game: Game, playerId: string, phase: PhaseId, action: 'execution' | 'life'): Game {
+  const events = playerEventsAt(game, playerId, phase);
+  const existing = action === 'execution'
+    ? events.find(event => event.kind === 'execution')
+    : events.filter(event => event.kind !== 'execution').at(-1);
+  if (existing) return removeLifeEvent(game, existing.id);
+  const result: EventResult = action === 'execution' ? { kind: 'execution', result: 'dead' }
+    : aliveAt(game, playerId, phase) ? { kind: 'death', result: 'dead' } : { kind: 'revival', result: 'alive' };
+  const event: GameEvent = { ...result, id: id(), phaseId: phase, playerId, reason: '',
+    sequence: nextSequence([...game.events, ...game.nominations], phase) };
+  return { ...game, events: [...game.events, event] };
 }
 
 export function removeLifeEvent(game: Game, eventId: string): Game {

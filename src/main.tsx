@@ -13,13 +13,14 @@ function App() {
     {!state.game && <header className="board-head">
       <div className="board-brand"><h1>Liars’ Circle</h1></div>
     </header>}
+    {state.readOnly && <p role="status" className="notice">{t('다른 창에서 앱을 편집 중입니다. 이 창에서는 저장할 수 없습니다. 편집 중인 창을 닫고 새로고침하세요.')}</p>}
     {state.restoreError && <p role="alert" className="notice">{t('게임 복원 실패 · {error}. 기존 데이터가 보존되어 있습니다.', { error: localizeError(language, state.restoreError) })}</p>}
     {state.restoreLibraryError && <p role="alert" className="notice">{t('시트 복원 실패 · {error}. 기존 데이터가 보존되어 있습니다.', { error: localizeError(language, state.restoreLibraryError) })}</p>}
     {state.error && <div role="alert" className="notice sticky-error">{localizeError(language, state.error)} <button onClick={state.flush}>{t('저장 재시도')}</button></div>}
     {state.libraryError && <p role="alert" className="notice">{localizeError(language, state.libraryError)}</p>}
     {state.game ? <Table key={state.game.id} game={state.game} commit={state.commit} flush={state.flush} end={state.end} /> :
       <Setup library={state.library} update={state.updateLibrary} start={state.commit}
-        blocked={!!state.restoreError} libraryBlocked={!!state.restoreLibraryError} />}
+        blocked={!!state.restoreError || state.readOnly} libraryBlocked={!!state.restoreLibraryError || state.readOnly} />}
     <footer>
       <img src="./botc/ccc.png" alt="Blood on the Clocktower Community Created Content" />
       <p>{t('비공식 비상업 팬 프로젝트')} · Blood on the Clocktower © The Pandemonium Institute</p>

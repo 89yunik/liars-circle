@@ -3,7 +3,8 @@ import type { ReactNode } from 'react';
 import { DeleteButton, MenuIcon } from './TableControls.tsx';
 import { phaseIndex, type Nomination, type PhaseId, type Whisper } from './model.ts';
 
-export type HistoryKind = 'votes' | 'whispers';
+import type { RecordKind as HistoryKind } from './useTableSelection.ts';
+export type { RecordKind as HistoryKind } from './useTableSelection.ts';
 
 export function TableHistory({
   nominations, whispers, history, selecting, setHistory, name, openMemo,

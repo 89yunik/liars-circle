@@ -6,7 +6,7 @@ import { officialScripts, parseScript } from './scripts.ts';
 
 export function Setup({ library, update, start, blocked, libraryBlocked }: {
   library: Script[];
-  update: (scripts: Script[]) => boolean;
+  update: (update: (scripts: Script[]) => Script[]) => boolean;
   start: (game: Game) => void;
   blocked: boolean;
   libraryBlocked: boolean;
@@ -72,7 +72,7 @@ export function Setup({ library, update, start, blocked, libraryBlocked }: {
                 <button type="button" aria-pressed={selected.id === script.id}
                   onClick={() => { setSheet(script.id); closeSheetPicker(); }}>{scriptName(script, language)}</button>
                 <button type="button" className="danger sheet-remove" aria-label={t('{name} 삭제', { name: scriptName(script, language) })} onClick={() => {
-                  if (update(library.filter(item => item.id !== script.id))) {
+                  if (update(current => current.filter(item => item.id !== script.id))) {
                     closeSheetPicker();
                     if (selected.id === script.id) {
                       setSheet(officialScripts[0].id);
@@ -97,7 +97,7 @@ export function Setup({ library, update, start, blocked, libraryBlocked }: {
         try {
           if (file.size > 2_000_000) throw new Error('2 MB 이하 JSON을 사용하세요.');
           const script = parseScript(await file.text(), file.name);
-          if (update([...library, script])) setSheet(script.id);
+          if (update(current => [...current, script])) setSheet(script.id);
         } catch (error) { setError(error instanceof Error ? error.message : '파일을 읽을 수 없습니다.'); }
       }} />
       {error && <p className="notice" role="alert">{localizeError(language, error)}</p>}

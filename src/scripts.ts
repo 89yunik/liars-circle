@@ -1,7 +1,15 @@
 import roles from './roles.json' with { type: 'json' };
-import { id, teams, type Character, type Script, type Team } from './model.ts';
+import alignmentIcons from './alignment-icons.json' with { type: 'json' };
+import { id, teams, type Alignment, type Character, type Script, type Team } from './model.ts';
 
-const catalog = new Map<string, Character>(roles.map(role => [role.id, { ...role, team: role.team as Team }]));
+const icons: Record<string, Partial<Record<Alignment, string>>> = alignmentIcons;
+const catalog = new Map<string, Character>(roles.map(role => [role.id, {
+  ...role, team: role.team as Team, alignmentImages: icons[role.id],
+}]));
+
+export function characterImage(character: Character | undefined, alignment?: Alignment) {
+  return (alignment && character?.alignmentImages?.[alignment]) || character?.image;
+}
 export const officialScripts: Script[] = [
   ['tb', 'Trouble Brewing'], ['bmr', 'Bad Moon Rising'], ['snv', 'Sects & Violets'],
 ].map(([edition, name]) => ({

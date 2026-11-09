@@ -4,6 +4,7 @@ export const MAX_PLAYERS = 20;
 export type PhaseId = `N${number}` | `D${number}`;
 export const teams = ['townsfolk', 'outsider', 'minion', 'demon', 'traveller', 'fabled', 'loric'] as const;
 export type Team = typeof teams[number];
+export type Alignment = 'good' | 'evil';
 
 export interface Character {
   id: string;
@@ -11,6 +12,7 @@ export interface Character {
   team: Team;
   ability: string;
   image?: string;
+  alignmentImages?: Partial<Record<Alignment, string>>;
 }
 export interface Script {
   id: string;
@@ -24,6 +26,13 @@ export interface Player {
   seat: number;
   traveller: boolean;
   characterId?: string;
+  alignment?: Alignment;
+}
+export function playerAlignment(player: Player, character?: Character): Alignment | undefined {
+  if (player.alignment) return player.alignment;
+  if (character?.team === 'townsfolk' || character?.team === 'outsider') return 'good';
+  if (character?.team === 'minion' || character?.team === 'demon') return 'evil';
+  return undefined;
 }
 export type MemoTarget = { target: 'general' } | { target: 'player'; playerId: string };
 export type Memo = MemoTarget & { id: string; phaseId: PhaseId; text: string };

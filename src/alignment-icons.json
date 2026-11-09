@@ -1,0 +1,626 @@
+{
+  "steward": {
+    "good": "./botc/steward.webp",
+    "evil": "./botc/steward_e.webp"
+  },
+  "knight": {
+    "good": "./botc/knight.webp",
+    "evil": "./botc/knight_e.webp"
+  },
+  "chef": {
+    "good": "./botc/chef.webp",
+    "evil": "./botc/chef_e.webp"
+  },
+  "noble": {
+    "good": "./botc/noble.webp",
+    "evil": "./botc/noble_e.webp"
+  },
+  "investigator": {
+    "good": "./botc/investigator.webp",
+    "evil": "./botc/investigator_e.webp"
+  },
+  "washerwoman": {
+    "good": "./botc/washerwoman.webp",
+    "evil": "./botc/washerwoman_e.webp"
+  },
+  "clockmaker": {
+    "good": "./botc/clockmaker.webp",
+    "evil": "./botc/clockmaker_e.webp"
+  },
+  "grandmother": {
+    "good": "./botc/grandmother.webp",
+    "evil": "./botc/grandmother_e.webp"
+  },
+  "librarian": {
+    "good": "./botc/librarian.webp",
+    "evil": "./botc/librarian_e.webp"
+  },
+  "shugenja": {
+    "good": "./botc/shugenja.webp",
+    "evil": "./botc/shugenja_e.webp"
+  },
+  "pixie": {
+    "good": "./botc/pixie.webp",
+    "evil": "./botc/pixie_e.webp"
+  },
+  "bountyhunter": {
+    "good": "./botc/bountyhunter.webp",
+    "evil": "./botc/bountyhunter_e.webp"
+  },
+  "empath": {
+    "good": "./botc/empath.webp",
+    "evil": "./botc/empath_e.webp"
+  },
+  "highpriestess": {
+    "good": "./botc/highpriestess.webp",
+    "evil": "./botc/highpriestess_e.webp"
+  },
+  "sailor": {
+    "good": "./botc/sailor.webp",
+    "evil": "./botc/sailor_e.webp"
+  },
+  "balloonist": {
+    "good": "./botc/balloonist.webp",
+    "evil": "./botc/balloonist_e.webp"
+  },
+  "general": {
+    "good": "./botc/general.webp",
+    "evil": "./botc/general_e.webp"
+  },
+  "preacher": {
+    "good": "./botc/preacher.webp",
+    "evil": "./botc/preacher_e.webp"
+  },
+  "chambermaid": {
+    "good": "./botc/chambermaid.webp",
+    "evil": "./botc/chambermaid_e.webp"
+  },
+  "villageidiot": {
+    "good": "./botc/villageidiot.webp",
+    "evil": "./botc/villageidiot_e.webp"
+  },
+  "snakecharmer": {
+    "good": "./botc/snakecharmer.webp",
+    "evil": "./botc/snakecharmer_e.webp"
+  },
+  "mathematician": {
+    "good": "./botc/mathematician.webp",
+    "evil": "./botc/mathematician_e.webp"
+  },
+  "king": {
+    "good": "./botc/king.webp",
+    "evil": "./botc/king_e.webp"
+  },
+  "dreamer": {
+    "good": "./botc/dreamer.webp",
+    "evil": "./botc/dreamer_e.webp"
+  },
+  "fortuneteller": {
+    "good": "./botc/fortuneteller.webp",
+    "evil": "./botc/fortuneteller_e.webp"
+  },
+  "cultleader": {
+    "good": "./botc/cultleader.webp",
+    "evil": "./botc/cultleader_e.webp"
+  },
+  "flowergirl": {
+    "good": "./botc/flowergirl.webp",
+    "evil": "./botc/flowergirl_e.webp"
+  },
+  "towncrier": {
+    "good": "./botc/towncrier.webp",
+    "evil": "./botc/towncrier_e.webp"
+  },
+  "oracle": {
+    "good": "./botc/oracle.webp",
+    "evil": "./botc/oracle_e.webp"
+  },
+  "undertaker": {
+    "good": "./botc/undertaker.webp",
+    "evil": "./botc/undertaker_e.webp"
+  },
+  "innkeeper": {
+    "good": "./botc/innkeeper.webp",
+    "evil": "./botc/innkeeper_e.webp"
+  },
+  "monk": {
+    "good": "./botc/monk.webp",
+    "evil": "./botc/monk_e.webp"
+  },
+  "gambler": {
+    "good": "./botc/gambler.webp",
+    "evil": "./botc/gambler_e.webp"
+  },
+  "acrobat": {
+    "good": "./botc/acrobat.webp",
+    "evil": "./botc/acrobat_e.webp"
+  },
+  "exorcist": {
+    "good": "./botc/exorcist.webp",
+    "evil": "./botc/exorcist_e.webp"
+  },
+  "lycanthrope": {
+    "good": "./botc/lycanthrope.webp",
+    "evil": "./botc/lycanthrope_e.webp"
+  },
+  "gossip": {
+    "good": "./botc/gossip.webp",
+    "evil": "./botc/gossip_e.webp"
+  },
+  "savant": {
+    "good": "./botc/savant.webp",
+    "evil": "./botc/savant_e.webp"
+  },
+  "alsaahir": {
+    "good": "./botc/alsaahir.webp",
+    "evil": "./botc/alsaahir_e.webp"
+  },
+  "engineer": {
+    "good": "./botc/engineer.webp",
+    "evil": "./botc/engineer_e.webp"
+  },
+  "nightwatchman": {
+    "good": "./botc/nightwatchman.webp",
+    "evil": "./botc/nightwatchman_e.webp"
+  },
+  "courtier": {
+    "good": "./botc/courtier.webp",
+    "evil": "./botc/courtier_e.webp"
+  },
+  "seamstress": {
+    "good": "./botc/seamstress.webp",
+    "evil": "./botc/seamstress_e.webp"
+  },
+  "philosopher": {
+    "good": "./botc/philosopher.webp",
+    "evil": "./botc/philosopher_e.webp"
+  },
+  "huntsman": {
+    "good": "./botc/huntsman.webp",
+    "evil": "./botc/huntsman_e.webp"
+  },
+  "professor": {
+    "good": "./botc/professor.webp",
+    "evil": "./botc/professor_e.webp"
+  },
+  "artist": {
+    "good": "./botc/artist.webp",
+    "evil": "./botc/artist_e.webp"
+  },
+  "slayer": {
+    "good": "./botc/slayer.webp",
+    "evil": "./botc/slayer_e.webp"
+  },
+  "fisherman": {
+    "good": "./botc/fisherman.webp",
+    "evil": "./botc/fisherman_e.webp"
+  },
+  "princess": {
+    "good": "./botc/princess.webp",
+    "evil": "./botc/princess_e.webp"
+  },
+  "juggler": {
+    "good": "./botc/juggler.webp",
+    "evil": "./botc/juggler_e.webp"
+  },
+  "soldier": {
+    "good": "./botc/soldier.webp",
+    "evil": "./botc/soldier_e.webp"
+  },
+  "alchemist": {
+    "good": "./botc/alchemist.webp",
+    "evil": "./botc/alchemist_e.webp"
+  },
+  "cannibal": {
+    "good": "./botc/cannibal.webp",
+    "evil": "./botc/cannibal_e.webp"
+  },
+  "amnesiac": {
+    "good": "./botc/amnesiac.webp",
+    "evil": "./botc/amnesiac_e.webp"
+  },
+  "farmer": {
+    "good": "./botc/farmer.webp",
+    "evil": "./botc/farmer_e.webp"
+  },
+  "minstrel": {
+    "good": "./botc/minstrel.webp",
+    "evil": "./botc/minstrel_e.webp"
+  },
+  "ravenkeeper": {
+    "good": "./botc/ravenkeeper.webp",
+    "evil": "./botc/ravenkeeper_e.webp"
+  },
+  "sage": {
+    "good": "./botc/sage.webp",
+    "evil": "./botc/sage_e.webp"
+  },
+  "choirboy": {
+    "good": "./botc/choirboy.webp",
+    "evil": "./botc/choirboy_e.webp"
+  },
+  "banshee": {
+    "good": "./botc/banshee.webp",
+    "evil": "./botc/banshee_e.webp"
+  },
+  "tealady": {
+    "good": "./botc/tealady.webp",
+    "evil": "./botc/tealady_e.webp"
+  },
+  "mayor": {
+    "good": "./botc/mayor.webp",
+    "evil": "./botc/mayor_e.webp"
+  },
+  "fool": {
+    "good": "./botc/fool.webp",
+    "evil": "./botc/fool_e.webp"
+  },
+  "virgin": {
+    "good": "./botc/virgin.webp",
+    "evil": "./botc/virgin_e.webp"
+  },
+  "magician": {
+    "good": "./botc/magician.webp",
+    "evil": "./botc/magician_e.webp"
+  },
+  "poppygrower": {
+    "good": "./botc/poppygrower.webp",
+    "evil": "./botc/poppygrower_e.webp"
+  },
+  "pacifist": {
+    "good": "./botc/pacifist.webp",
+    "evil": "./botc/pacifist_e.webp"
+  },
+  "atheist": {
+    "good": "./botc/atheist.webp",
+    "evil": "./botc/atheist_e.webp"
+  },
+  "hermit": {
+    "good": "./botc/hermit.webp",
+    "evil": "./botc/hermit_e.webp"
+  },
+  "butler": {
+    "good": "./botc/butler.webp",
+    "evil": "./botc/butler_e.webp"
+  },
+  "goon": {
+    "good": "./botc/goon.webp",
+    "evil": "./botc/goon_e.webp"
+  },
+  "ogre": {
+    "good": "./botc/ogre.webp",
+    "evil": "./botc/ogre_e.webp"
+  },
+  "lunatic": {
+    "good": "./botc/lunatic.webp",
+    "evil": "./botc/lunatic_e.webp"
+  },
+  "drunk": {
+    "good": "./botc/drunk.webp",
+    "evil": "./botc/drunk_e.webp"
+  },
+  "tinker": {
+    "good": "./botc/tinker.webp",
+    "evil": "./botc/tinker_e.webp"
+  },
+  "recluse": {
+    "good": "./botc/recluse.webp",
+    "evil": "./botc/recluse_e.webp"
+  },
+  "golem": {
+    "good": "./botc/golem.webp",
+    "evil": "./botc/golem_e.webp"
+  },
+  "sweetheart": {
+    "good": "./botc/sweetheart.webp",
+    "evil": "./botc/sweetheart_e.webp"
+  },
+  "plaguedoctor": {
+    "good": "./botc/plaguedoctor.webp",
+    "evil": "./botc/plaguedoctor_e.webp"
+  },
+  "klutz": {
+    "good": "./botc/klutz.webp",
+    "evil": "./botc/klutz_e.webp"
+  },
+  "moonchild": {
+    "good": "./botc/moonchild.webp",
+    "evil": "./botc/moonchild_e.webp"
+  },
+  "saint": {
+    "good": "./botc/saint.webp",
+    "evil": "./botc/saint_e.webp"
+  },
+  "barber": {
+    "good": "./botc/barber.webp",
+    "evil": "./botc/barber_e.webp"
+  },
+  "hatter": {
+    "good": "./botc/hatter.webp",
+    "evil": "./botc/hatter_e.webp"
+  },
+  "mutant": {
+    "good": "./botc/mutant.webp",
+    "evil": "./botc/mutant_e.webp"
+  },
+  "politician": {
+    "good": "./botc/politician.webp",
+    "evil": "./botc/politician_e.webp"
+  },
+  "zealot": {
+    "good": "./botc/zealot.webp",
+    "evil": "./botc/zealot_e.webp"
+  },
+  "damsel": {
+    "good": "./botc/damsel.webp",
+    "evil": "./botc/damsel_e.webp"
+  },
+  "snitch": {
+    "good": "./botc/snitch.webp",
+    "evil": "./botc/snitch_e.webp"
+  },
+  "heretic": {
+    "good": "./botc/heretic.webp",
+    "evil": "./botc/heretic_e.webp"
+  },
+  "puzzlemaster": {
+    "good": "./botc/puzzlemaster.webp",
+    "evil": "./botc/puzzlemaster_e.webp"
+  },
+  "mezepheles": {
+    "good": "./botc/mezepheles_g.webp",
+    "evil": "./botc/mezepheles.webp"
+  },
+  "godfather": {
+    "good": "./botc/godfather_g.webp",
+    "evil": "./botc/godfather.webp"
+  },
+  "poisoner": {
+    "good": "./botc/poisoner_g.webp",
+    "evil": "./botc/poisoner.webp"
+  },
+  "devilsadvocate": {
+    "good": "./botc/devilsadvocate_g.webp",
+    "evil": "./botc/devilsadvocate.webp"
+  },
+  "spy": {
+    "good": "./botc/spy_g.webp",
+    "evil": "./botc/spy.webp"
+  },
+  "harpy": {
+    "good": "./botc/harpy_g.webp",
+    "evil": "./botc/harpy.webp"
+  },
+  "witch": {
+    "good": "./botc/witch_g.webp",
+    "evil": "./botc/witch.webp"
+  },
+  "cerenovus": {
+    "good": "./botc/cerenovus_g.webp",
+    "evil": "./botc/cerenovus.webp"
+  },
+  "fearmonger": {
+    "good": "./botc/fearmonger_g.webp",
+    "evil": "./botc/fearmonger.webp"
+  },
+  "pithag": {
+    "good": "./botc/pithag_g.webp",
+    "evil": "./botc/pithag.webp"
+  },
+  "psychopath": {
+    "good": "./botc/psychopath_g.webp",
+    "evil": "./botc/psychopath.webp"
+  },
+  "assassin": {
+    "good": "./botc/assassin_g.webp",
+    "evil": "./botc/assassin.webp"
+  },
+  "wizard": {
+    "good": "./botc/wizard_g.webp",
+    "evil": "./botc/wizard.webp"
+  },
+  "widow": {
+    "good": "./botc/widow_g.webp",
+    "evil": "./botc/widow.webp"
+  },
+  "xaan": {
+    "good": "./botc/xaan_g.webp",
+    "evil": "./botc/xaan.webp"
+  },
+  "marionette": {
+    "good": "./botc/marionette_g.webp",
+    "evil": "./botc/marionette.webp"
+  },
+  "wraith": {
+    "good": "./botc/wraith_g.webp",
+    "evil": "./botc/wraith.webp"
+  },
+  "summoner": {
+    "good": "./botc/summoner_g.webp",
+    "evil": "./botc/summoner.webp"
+  },
+  "eviltwin": {
+    "good": "./botc/eviltwin_g.webp",
+    "evil": "./botc/eviltwin.webp"
+  },
+  "goblin": {
+    "good": "./botc/goblin_g.webp",
+    "evil": "./botc/goblin.webp"
+  },
+  "boomdandy": {
+    "good": "./botc/boomdandy_g.webp",
+    "evil": "./botc/boomdandy.webp"
+  },
+  "mastermind": {
+    "good": "./botc/mastermind_g.webp",
+    "evil": "./botc/mastermind.webp"
+  },
+  "scarletwoman": {
+    "good": "./botc/scarletwoman_g.webp",
+    "evil": "./botc/scarletwoman.webp"
+  },
+  "vizier": {
+    "good": "./botc/vizier_g.webp",
+    "evil": "./botc/vizier.webp"
+  },
+  "organgrinder": {
+    "good": "./botc/organgrinder_g.webp",
+    "evil": "./botc/organgrinder.webp"
+  },
+  "boffin": {
+    "good": "./botc/boffin_g.webp",
+    "evil": "./botc/boffin.webp"
+  },
+  "baron": {
+    "good": "./botc/baron_g.webp",
+    "evil": "./botc/baron.webp"
+  },
+  "yaggababble": {
+    "good": "./botc/yaggababble_g.webp",
+    "evil": "./botc/yaggababble.webp"
+  },
+  "pukka": {
+    "good": "./botc/pukka_g.webp",
+    "evil": "./botc/pukka.webp"
+  },
+  "lilmonsta": {
+    "good": "./botc/lilmonsta_g.webp",
+    "evil": "./botc/lilmonsta.webp"
+  },
+  "nodashii": {
+    "good": "./botc/nodashii_g.webp",
+    "evil": "./botc/nodashii.webp"
+  },
+  "imp": {
+    "good": "./botc/imp_g.webp",
+    "evil": "./botc/imp.webp"
+  },
+  "shabaloth": {
+    "good": "./botc/shabaloth_g.webp",
+    "evil": "./botc/shabaloth.webp"
+  },
+  "ojo": {
+    "good": "./botc/ojo_g.webp",
+    "evil": "./botc/ojo.webp"
+  },
+  "kazali": {
+    "good": "./botc/kazali_g.webp",
+    "evil": "./botc/kazali.webp"
+  },
+  "po": {
+    "good": "./botc/po_g.webp",
+    "evil": "./botc/po.webp"
+  },
+  "zombuul": {
+    "good": "./botc/zombuul_g.webp",
+    "evil": "./botc/zombuul.webp"
+  },
+  "vigormortis": {
+    "good": "./botc/vigormortis_g.webp",
+    "evil": "./botc/vigormortis.webp"
+  },
+  "vortox": {
+    "good": "./botc/vortox_g.webp",
+    "evil": "./botc/vortox.webp"
+  },
+  "legion": {
+    "good": "./botc/legion_g.webp",
+    "evil": "./botc/legion.webp"
+  },
+  "fanggu": {
+    "good": "./botc/fanggu_g.webp",
+    "evil": "./botc/fanggu.webp"
+  },
+  "lordoftyphon": {
+    "good": "./botc/lordoftyphon_g.webp",
+    "evil": "./botc/lordoftyphon.webp"
+  },
+  "lleech": {
+    "good": "./botc/lleech_g.webp",
+    "evil": "./botc/lleech.webp"
+  },
+  "alhadikhia": {
+    "good": "./botc/alhadikhia_g.webp",
+    "evil": "./botc/alhadikhia.webp"
+  },
+  "riot": {
+    "good": "./botc/riot_g.webp",
+    "evil": "./botc/riot.webp"
+  },
+  "leviathan": {
+    "good": "./botc/leviathan_g.webp",
+    "evil": "./botc/leviathan.webp"
+  },
+  "thief": {
+    "good": "./botc/thief_g.webp",
+    "evil": "./botc/thief_e.webp"
+  },
+  "bureaucrat": {
+    "good": "./botc/bureaucrat_g.webp",
+    "evil": "./botc/bureaucrat_e.webp"
+  },
+  "barista": {
+    "good": "./botc/barista_g.webp",
+    "evil": "./botc/barista_e.webp"
+  },
+  "harlot": {
+    "good": "./botc/harlot_g.webp",
+    "evil": "./botc/harlot_e.webp"
+  },
+  "butcher": {
+    "good": "./botc/butcher_g.webp",
+    "evil": "./botc/butcher_e.webp"
+  },
+  "cacklejack": {
+    "good": "./botc/cacklejack_g.webp",
+    "evil": "./botc/cacklejack_e.webp"
+  },
+  "gunslinger": {
+    "good": "./botc/gunslinger_g.webp",
+    "evil": "./botc/gunslinger_e.webp"
+  },
+  "matron": {
+    "good": "./botc/matron_g.webp",
+    "evil": "./botc/matron_e.webp"
+  },
+  "gangster": {
+    "good": "./botc/gangster_g.webp",
+    "evil": "./botc/gangster_e.webp"
+  },
+  "bonecollector": {
+    "good": "./botc/bonecollector_g.webp",
+    "evil": "./botc/bonecollector_e.webp"
+  },
+  "judge": {
+    "good": "./botc/judge_g.webp",
+    "evil": "./botc/judge_e.webp"
+  },
+  "apprentice": {
+    "good": "./botc/apprentice_g.webp",
+    "evil": "./botc/apprentice_e.webp"
+  },
+  "beggar": {
+    "good": "./botc/beggar_g.webp",
+    "evil": "./botc/beggar_e.webp"
+  },
+  "deviant": {
+    "good": "./botc/deviant_g.webp",
+    "evil": "./botc/deviant_e.webp"
+  },
+  "scapegoat": {
+    "good": "./botc/scapegoat_g.webp",
+    "evil": "./botc/scapegoat_e.webp"
+  },
+  "gnome": {
+    "good": "./botc/gnome_g.webp",
+    "evil": "./botc/gnome_e.webp"
+  },
+  "bishop": {
+    "good": "./botc/bishop_g.webp",
+    "evil": "./botc/bishop_e.webp"
+  },
+  "voudon": {
+    "good": "./botc/voudon_g.webp",
+    "evil": "./botc/voudon_e.webp"
+  }
+}

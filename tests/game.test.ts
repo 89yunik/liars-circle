@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { aliveAt, evenlySpacedSeats, newGame, nextSequence, phaseAt, phaseIndex, putRecord, removeLifeEvent, removePlayer, reorderPlayer, seatPosition, usedGhostVote, writeMemo,
+import { aliveAt, evenlySpacedSeats, newGame, nextSequence, phaseAt, phaseIndex, playerAlignment, putRecord, removeLifeEvent, removePlayer, reorderPlayer, seatPosition, usedGhostVote, writeMemo,
   type GameEvent, type Nomination } from '../src/model.ts';
-import { characters, officialScripts, parseScript } from '../src/scripts.ts';
+import { characterImage, characters, officialScripts, parseScript } from '../src/scripts.ts';
 import { gameKey, libraryKey, restoreGame, restoreLibrary } from '../src/storage.ts';
 
 const fresh = () => newGame(officialScripts[0], Array.from({ length: 5 }, () => ({ name: '', traveller: false })));
@@ -153,6 +153,31 @@ test('cancelling an earlier death removes redundant revivals before reapplying e
   assert.equal(aliveAt(withSurvived, a.id, 'D2'), false);
 });
 
+test('alignment overrides character defaults and uses official offline images', () => {
+  const [player] = fresh().players;
+  const catalog = officialScripts.flatMap(characters);
+  for (const team of ['townsfolk', 'outsider', 'minion', 'demon'] as const) {
+    const role = catalog.find(role => role.team === team)!;
+    const normal = team === 'townsfolk' || team === 'outsider' ? 'good' : 'evil';
+    const reversed = normal === 'good' ? 'evil' : 'good';
+    assert.equal(playerAlignment(player, role), normal);
+    assert.equal(playerAlignment({ ...player, alignment: reversed }, role), reversed);
+    assert.equal(characterImage(role, normal), role.image);
+    const opposite = characterImage(role, reversed)!;
+    assert.notEqual(opposite, role.image);
+    assert.ok(existsSync('public/' + opposite.replace('./', '')));
+  }
+  assert.equal(playerAlignment(player), undefined);
+  assert.equal(playerAlignment({ ...player, alignment: 'good' }), 'good');
+  const custom = { id: 'custom', name: 'Custom', team: 'townsfolk' as const, ability: '', image: 'https://example.com/custom.png' };
+  assert.equal(characterImage(custom, 'evil'), custom.image);
+  for (const role of catalog) {
+    for (const image of Object.values(role.alignmentImages ?? {})) {
+      assert.ok(existsSync('public/' + image.replace('./', '')));
+    }
+  }
+});
+
 test('three editions and their Traveller images are available locally', () => {
   assert.deepEqual(officialScripts.map(sheet => characters(sheet).length), [27, 30, 30]);
   for (const sheet of officialScripts) {
@@ -187,6 +212,13 @@ test('stored game and library restore independently and malformed input stays in
       removeItem: (key: string) => data.delete(key),
     },
   });
+  for (const alignment of ['good', 'evil']) {
+    const aligned = { ...game, players: game.players.map((player, index) => index === 0 ? { ...player, alignment } : player) };
+    localStorage.setItem(gameKey, JSON.stringify(aligned));
+    assert.deepEqual(restoreGame().value, aligned);
+  }
+  localStorage.setItem(gameKey, JSON.stringify({ ...game, players: game.players.map(player => ({ ...player, alignment: 'invalid' })) }));
+  assert.ok(restoreGame().error);
   const { whispers: _whispers, ...legacyGame } = game;
   localStorage.setItem(gameKey, JSON.stringify(legacyGame));
   assert.deepEqual(restoreGame().value, legacyGame);

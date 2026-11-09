@@ -148,6 +148,8 @@ button.board-action { flex: none; display: grid; place-items: center; color: #f2
 :is(.token-seat, .role):is([data-team="minion"], [data-team="demon"]) {
   --character-border: var(--character-border-evil);
 }
+.token-seat[data-alignment="good"] { --character-border: var(--character-border-good); }
+.token-seat[data-alignment="evil"] { --character-border: var(--character-border-evil); }
 :is(button.token, button.role, .token-label):hover:not(:disabled) { border-color: var(--character-border); }
 .token-seat {
   left: calc(50% + (50% - var(--seat-inset)) * var(--seat-x));

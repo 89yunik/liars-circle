@@ -33,6 +33,7 @@ function game(value: unknown): value is Game {
     !value.players.every((p, seat) => {
       if (!object(p) || typeof p.id !== 'string' || ids.has(p.id) || p.seat !== seat ||
           typeof p.name !== 'string' || typeof p.traveller !== 'boolean' ||
+          (p.alignment !== undefined && p.alignment !== 'good' && p.alignment !== 'evil') ||
           (p.characterId !== undefined && (typeof p.characterId !== 'string' || !roleIds.has(p.characterId)))) return false;
       ids.add(p.id);
       return true;

@@ -2,7 +2,7 @@ import { flushSync } from 'react-dom';
 import { useEffect, useRef, useState } from 'react';
 import { MemoEditor, Portrait, Sheet } from './Editors.tsx';
 import {
-  aliveAt, byTime, id, MAX_PLAYERS, MIN_PLAYERS, nextSequence, phaseAt, phaseIndex, putRecord, removeLifeEvent, removePlayer, reorderPlayer, writeMemo,
+  aliveAt, byTime, id, MAX_PLAYERS, MIN_PLAYERS, nextSequence, phaseAt, phaseIndex, playerAlignment, putRecord, removeLifeEvent, removePlayer, reorderPlayer, writeMemo,
   type EventResult, type Game, type GameEvent, type MemoTarget, type PhaseId, type Whisper,
 } from './model.ts';
 import { characters } from './scripts.ts';
@@ -67,6 +67,7 @@ export function Table({ game, commit, flush, end }: {
   const roles = characters(game.script);
   const selected = popup && 'playerId' in popup ? game.players.find(player => player.id === popup.playerId) : undefined;
   const selectedAlive = selected && aliveAt(game, selected.id, phase);
+  const selectedAlignment = selected && playerAlignment(selected, roles.find(role => role.id === selected.characterId));
   const selectedExecuted = selected && game.events.some(event => isExecution(event, selected.id));
   const selectedLifeEvent = selected && game.events.filter(event =>
     event.playerId === selected.id && event.phaseId === phase && event.kind !== 'execution').sort(byTime).at(-1);
@@ -299,15 +300,19 @@ export function Table({ game, commit, flush, end }: {
       message="게임을 종료하고 저장된 기록을 삭제할까요?" close={close} confirm={end} />}
     {popup?.kind === 'player' && selected && <Sheet centered compact title={selected.name} close={close}>
       <div className="stack player-menu">
-        {([['profile', '플레이어'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', lifeLabel]] as const)
+        {([['profile', '플레이어'], ['alignment', '진영 변경'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', lifeLabel]] as const)
           .filter(([kind]) => isDay || kind !== 'execution')
           .map(([kind, label]) => <button key={kind} className="record-link"
             onClick={() => {
-            if (kind === 'execution' || kind === 'life') recordPlayerEvent(selected.id, kind);
+            if (kind === 'alignment') {
+              commit({ ...game, players: game.players.map(player => player.id === selected.id
+                ? { ...player, alignment: selectedAlignment === 'good' ? 'evil' : 'good' } : player) });
+              close();
+            } else if (kind === 'execution' || kind === 'life') recordPlayerEvent(selected.id, kind);
             else setPopup({ kind, playerId: selected.id });
           }}>
             <MenuIcon kind={kind === 'life' && !selectedAlive ? 'revival' : kind} />
-            <span>{label}</span>
+            <span>{label}{kind === 'alignment' && selectedAlignment && <small> · {selectedAlignment === 'good' ? '선' : '악'}</small>}</span>
           </button>)}
       </div>
     </Sheet>}

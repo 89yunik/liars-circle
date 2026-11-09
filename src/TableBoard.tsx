@@ -1,8 +1,9 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { usePlayerDrag } from './usePlayerDrag.ts';
 import { MenuIcon } from './TableControls.tsx';
+import { characterImage } from './scripts.ts';
 import { Portrait } from './Editors.tsx';
-import { aliveAt, evenlySpacedSeats, seatPosition, type Character, type Game, type Nomination, type PhaseId, type Whisper } from './model.ts';
+import { aliveAt, evenlySpacedSeats, playerAlignment, seatPosition, type Character, type Game, type Nomination, type PhaseId, type Whisper } from './model.ts';
 
 export type VoteDraft = Nomination & { step: 1 | 2 };
 
@@ -102,6 +103,8 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
         const savedPosition = positions[player.seat];
         const pos = drag.preview?.playerId === player.id ? drag.preview.position : savedPosition;
         const role = roles.find(role => role.id === player.characterId);
+        const alignment = playerAlignment(player, role);
+        const image = characterImage(role, alignment);
         const aliveNow = aliveAt(game, player.id, phase);
         const executed = phaseEvents.some(event => event.kind === 'execution' && event.playerId === player.id);
         const diedThisPhase = !aliveNow && phaseEvents.some(event => event.kind === 'death' && event.playerId === player.id);
@@ -111,7 +114,7 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
         const voter = vote?.voterIds.includes(player.id);
         const whisperSource = whisper?.playerId === player.id;
         const whisperPartner = whisper?.partnerIds.includes(player.id);
-        return <div key={player.id} data-team={role?.team} className={drag.preview?.playerId === player.id ? 'token-seat dragging' : 'token-seat'}
+        return <div key={player.id} data-team={role?.team} data-alignment={alignment} className={drag.preview?.playerId === player.id ? 'token-seat dragging' : 'token-seat'}
           style={{ '--seat-x': pos.x, '--seat-y': pos.y } as CSSProperties}
           onDragStart={event => event.preventDefault()}
           onPointerDown={event => { if (!selecting) drag.start(event, player.id, savedPosition); }}
@@ -120,10 +123,10 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
           <button className={`token ${aliveNow ? '' : 'dead'} ${executed ? 'executed' : ''} ${selectedId === player.id ? 'selected' : ''}`}
           aria-disabled={selectSource === 'votes' && !canNominate(player.id)}
           aria-pressed={whisper && !whisperSource ? !!whisperPartner : undefined}
-          aria-label={`${player.name}, ${aliveNow ? '생존' : '사망'}${executed ? ', 처형' : ''}${role ? ', ' + role.name : ''}${nominator ? ', 지명자' : ''}${nominee ? ', 피지명자' : ''}${voter ? ', 투표자' : ''}${whisperSource ? ', 밀담 기준 플레이어' : ''}`}
+          aria-label={`${player.name}, ${aliveNow ? '생존' : '사망'}${executed ? ', 처형' : ''}${role ? ', ' + role.name : ''}${alignment ? alignment === 'good' ? ', 선' : ', 악' : ''}${nominator ? ', 지명자' : ''}${nominee ? ', 피지명자' : ''}${voter ? ', 투표자' : ''}${whisperSource ? ', 밀담 기준 플레이어' : ''}`}
           title={role ? `${player.name} · ${role.name}` : player.name}
           onClick={() => tap(player.id)}>
-          <span className="token-art"><Portrait key={role?.image} src={role?.image} /></span>
+          <span className="token-art"><Portrait key={image} src={image} /></span>
           {statusMark && <span className="token-status" aria-hidden="true">{statusMark}</span>}
           {(nominator || nominee || voter || whisperSource || whisperPartner) && <span className="vote-marks" aria-hidden="true">
             {nominator && <i className="mark-vote">지</i>}{nominee && <i className="mark-vote">피</i>}{voter && <i className="mark-vote">표</i>}

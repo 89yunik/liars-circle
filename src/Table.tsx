@@ -8,11 +8,12 @@ import {
 import { characters } from './scripts.ts';
 import { TableBoard, type VoteDraft } from './TableBoard.tsx';
 import { Confirmation, DeleteButton, MenuIcon } from './TableControls.tsx';
+import { ScriptReference } from './ScriptReference.tsx';
 import { TableHistory, type HistoryKind } from './TableHistory.tsx';
 
 type Popup =
   | { kind: 'player' | 'character' | 'memo' | 'profile' | 'delete-player'; playerId: string }
-  | { kind: 'general' | 'end' };
+  | { kind: 'general' | 'end' | 'script' };
 
 export function Table({ game, commit, flush, end }: {
   game: Game; commit: (game: Game, debounce?: boolean) => void; flush: () => void;
@@ -231,7 +232,10 @@ export function Table({ game, commit, flush, end }: {
     <header className="board-head">
       <div className="board-brand">
         <h1>Liars’ Circle</h1>
-        <span className="eyebrow" title={game.script.name}>{game.script.name}</span>
+        <button type="button" className="eyebrow script-reference-trigger" title="시트 캐릭터 설명"
+          aria-label={`${game.script.name} · 캐릭터 설명 보기`} onClick={() => setPopup({ kind: 'script' })}>
+          <span>{game.script.name}</span><MenuIcon kind="memo" />
+        </button>
       </div>
       <div className="phase">
         <button className="icon" aria-label="이전 일자" disabled={phase === 'N1' && !vote} onClick={() => navigate(-1)}>‹</button>
@@ -296,6 +300,7 @@ export function Table({ game, commit, flush, end }: {
       deleteVote={id => commit({ ...game, nominations: game.nominations.filter(record => record.id !== id) })}
       deleteWhisper={id => commit({ ...game, whispers: whispers.filter(record => record.id !== id) })} />
 
+    {popup?.kind === 'script' && <ScriptReference name={game.script.name} roles={roles} close={close} />}
     {popup?.kind === 'end' && <Confirmation title="게임 종료"
       message="게임을 종료하고 저장된 기록을 삭제할까요?" close={close} confirm={end} />}
     {popup?.kind === 'player' && selected && <Sheet centered compact title={selected.name} close={close}>

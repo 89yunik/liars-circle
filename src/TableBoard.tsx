@@ -111,13 +111,13 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
         const voter = vote?.voterIds.includes(player.id);
         const whisperSource = whisper?.playerId === player.id;
         const whisperPartner = whisper?.partnerIds.includes(player.id);
-        return <div key={player.id} className={drag.preview?.playerId === player.id ? 'token-seat dragging' : 'token-seat'}
+        return <div key={player.id} data-team={role?.team} className={drag.preview?.playerId === player.id ? 'token-seat dragging' : 'token-seat'}
           style={{ '--seat-x': pos.x, '--seat-y': pos.y } as CSSProperties}
           onDragStart={event => event.preventDefault()}
           onPointerDown={event => { if (!selecting) drag.start(event, player.id, savedPosition); }}
           onTouchStart={event => { if (!selecting) drag.startTouch(event, player.id, savedPosition); }}
         >
-          <button data-team={role?.team} className={`token ${aliveNow ? '' : 'dead'} ${executed ? 'executed' : ''} ${selectedId === player.id ? 'selected' : ''}`}
+          <button className={`token ${aliveNow ? '' : 'dead'} ${executed ? 'executed' : ''} ${selectedId === player.id ? 'selected' : ''}`}
           aria-disabled={selectSource === 'votes' && !canNominate(player.id)}
           aria-pressed={whisper && !whisperSource ? !!whisperPartner : undefined}
           aria-label={`${player.name}, ${aliveNow ? '생존' : '사망'}${executed ? ', 처형' : ''}${role ? ', ' + role.name : ''}${nominator ? ', 지명자' : ''}${nominee ? ', 피지명자' : ''}${voter ? ', 투표자' : ''}${whisperSource ? ', 밀담 기준 플레이어' : ''}`}
@@ -140,12 +140,12 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
               }}>
               {player.name}{player.traveller && <sup> T</sup>}
             </button>
-            <button type="button" className="token-memo" disabled={selecting}
-              aria-label={`${player.name} · ${phase} 메모`} title="메모"
-              onClick={() => openMemo(player.id)}>
-              <MenuIcon kind="memo" />
-            </button>
           </div>
+          <button type="button" className="token-memo" disabled={selecting}
+            aria-label={`${player.name} · ${phase} 메모`} title="메모"
+            onClick={() => openMemo(player.id)}>
+            <MenuIcon kind="memo" />
+          </button>
         </div>;
       })}
     </div>

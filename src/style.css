@@ -141,14 +141,14 @@ button.board-action { flex: none; display: grid; place-items: center; color: #f2
 }
 .table-center { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 4px; text-align: center; white-space: nowrap; color: var(--muted); }
 .role-counts { display: flex; gap: 7px; color: #f2d4a3; font-size: .75rem; }
-.token, .role { --character-border: var(--character-border-default); }
-:is(.token, .role):is([data-team="townsfolk"], [data-team="outsider"]) {
+.token-seat, .role { --character-border: var(--character-border-default); }
+:is(.token-seat, .role):is([data-team="townsfolk"], [data-team="outsider"]) {
   --character-border: var(--character-border-good);
 }
-:is(.token, .role):is([data-team="minion"], [data-team="demon"]) {
+:is(.token-seat, .role):is([data-team="minion"], [data-team="demon"]) {
   --character-border: var(--character-border-evil);
 }
-:is(button.token, button.role):hover:not(:disabled) { border-color: var(--character-border); }
+:is(button.token, button.role, .token-label):hover:not(:disabled) { border-color: var(--character-border); }
 .token-seat {
   left: calc(50% + (50% - var(--seat-inset)) * var(--seat-x));
   top: calc(50% + (50% - var(--seat-inset) - 5px) * var(--seat-y));
@@ -168,19 +168,25 @@ button.token {
 .token.selected { outline: 3px solid var(--character-border); outline-offset: 3px; }
 .token-caption {
   position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-  display: flex; align-items: center; gap: 2px;
-  width: max-content; max-width: calc(100% + 16px);
+  width: max-content; max-width: max(calc(100% + 12px), calc(3em + 12px));
+  font-size: .72rem;
 }
 .token-label {
-  min-width: 0; overflow-wrap: anywhere;
+  display: block; max-width: 100%; min-width: 0; overflow-wrap: anywhere;
   padding: 1px 5px; background: #17121e; border-radius: 5px;
   min-height: 0; font-size: .72rem; line-height: 1.25; font-weight: 750;
 }
 .token-memo {
-  display: grid; place-items: center; flex: none; width: 20px; min-height: 24px;
-  padding: 0; border: 0; border-radius: 4px; background: #10101a; color: var(--gold);
+  position: absolute; left: 50%; top: 0; transform: translate(-50%, -50%);
+  z-index: 2;
+  display: grid; place-items: center; width: 20px; min-height: 24px;
+  padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--character-border);
 }
-.token-memo svg { width: 14px; height: 14px; }
+.token-memo svg {
+  width: 14px; height: 14px;
+  filter: drop-shadow(1px 0 0 #10101a) drop-shadow(-1px 0 0 #10101a)
+    drop-shadow(0 1px 0 #10101a) drop-shadow(0 -1px 0 #10101a);
+}
 .token[aria-disabled=true] { opacity: .45; }
 .token-label.long-name { font-size: .625rem; }
 .vote-marks { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; }
@@ -238,7 +244,7 @@ body {
   padding: 0 3px; border-radius: 4px; background: var(--character-border); color: #14121a;
   font-size: .58rem; font-weight: 750; white-space: nowrap;
 }
-.token-label { background: #10101a; border: 1px solid #8f6e47; }
+.token-label { background: #10101a; border: 1px solid var(--character-border); }
 dialog.table-dialog {
   inset: 0;
   margin: auto;

@@ -1,5 +1,7 @@
+import { useLanguage } from './Language.tsx';
+import { localizeCharacter, scriptName } from './locale.ts';
 import { flushSync } from 'react-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { MemoEditor, Portrait, Sheet } from './Editors.tsx';
 import {
   aliveAt, byTime, id, MAX_PLAYERS, MIN_PLAYERS, nextSequence, phaseAt, phaseIndex, playerAlignment, putRecord, removeLifeEvent, removePlayer, reorderPlayer, writeMemo,
@@ -8,8 +10,8 @@ import {
 import { characters } from './scripts.ts';
 import { TableBoard, type VoteDraft } from './TableBoard.tsx';
 import { Confirmation, DeleteButton, MenuIcon } from './TableControls.tsx';
-import { ScriptReference } from './ScriptReference.tsx';
 import { TableHistory, type HistoryKind } from './TableHistory.tsx';
+import { ScriptReference } from './ScriptReference.tsx';
 
 type Popup =
   | { kind: 'player' | 'character' | 'memo' | 'profile' | 'delete-player'; playerId: string }
@@ -19,11 +21,13 @@ export function Table({ game, commit, flush, end }: {
   game: Game; commit: (game: Game, debounce?: boolean) => void; flush: () => void;
   end: () => void;
 }) {
+  const { t, language } = useLanguage();
   const phaseTouch = useRef(false);
   const [showPhaseDelete, setShowPhaseDelete] = useState(false);
   const [view, setView] = useState<PhaseId | null>(null);
   const [popup, setPopup] = useState<Popup | null>(null);
   const [history, setHistory] = useState<HistoryKind | null>(null);
+  const phase = view ?? game.currentPhase;
   const [vote, setVote] = useState<VoteDraft | null>(null);
   const [whisper, setWhisper] = useState<Whisper | null>(null);
   const [selectSource, setSelectSource] = useState<HistoryKind | null>(null);
@@ -61,11 +65,10 @@ export function Table({ game, commit, flush, end }: {
     document.addEventListener('click', dismissHistory, true);
     return () => document.removeEventListener('click', dismissHistory, true);
   }, [history]);
-  const phase = view ?? game.currentPhase;
   const isDay = phase.startsWith('D');
   const canNominate = (playerId: string) => isDay && aliveAt(game, playerId, phase) &&
     !game.nominations.some(record => record.phaseId === phase && record.nominatorId === playerId);
-  const roles = characters(game.script);
+  const roles = useMemo(() => characters(game.script).map(role => localizeCharacter(role, language)), [game.script, language]);
   const selected = popup && 'playerId' in popup ? game.players.find(player => player.id === popup.playerId) : undefined;
   const selectedAlive = selected && aliveAt(game, selected.id, phase);
   const selectedAlignment = selected && playerAlignment(selected, roles.find(role => role.id === selected.characterId));
@@ -232,16 +235,16 @@ export function Table({ game, commit, flush, end }: {
     <header className="board-head">
       <div className="board-brand">
         <h1>Liars’ Circle</h1>
-        <button type="button" className="eyebrow script-reference-trigger" title="시트 캐릭터 설명"
-          aria-label={`${game.script.name} · 캐릭터 설명 보기`} onClick={() => setPopup({ kind: 'script' })}>
-          <span>{game.script.name}</span><MenuIcon kind="memo" />
+        <button type="button" className="eyebrow script-reference-trigger" title={t('시트 캐릭터 설명')}
+          aria-label={`${scriptName(game.script, language)} · ${t('캐릭터 설명 보기')}`} onClick={() => setPopup({ kind: 'script' })}>
+          <span>{scriptName(game.script, language)}</span><MenuIcon kind="memo" />
         </button>
       </div>
       <div className="phase">
-        <button className="icon" aria-label="이전 일자" disabled={phase === 'N1' && !vote} onClick={() => navigate(-1)}>‹</button>
+        <button className="icon" aria-label={t('이전 일자')} disabled={phase === 'N1'} onClick={() => navigate(-1)}>‹</button>
         {phase !== 'N1' && phase === game.currentPhase
           ? <button className={showPhaseDelete ? 'phase-label show-delete' : 'phase-label'}
-              aria-label={`${phase} 및 일자 기록 삭제`}
+              aria-label={t('{phase} 및 일자 기록 삭제', { phase })}
               onPointerDown={event => {
                 phaseTouch.current = event.pointerType === 'touch';
                 if (phaseTouch.current) setShowPhaseDelete(true);
@@ -261,10 +264,10 @@ export function Table({ game, commit, flush, end }: {
               <span className="phase-delete" aria-hidden="true">×</span>
             </button>
           : <strong>{phase}</strong>}
-        <button className={phase === game.currentPhase ? 'icon phase-next-new' : 'icon'} aria-label="다음 일자" onClick={() => navigate(1)}>›</button>
+        <button className={phase === game.currentPhase ? 'icon phase-next-new' : 'icon'} aria-label={t('다음 일자')} onClick={() => navigate(1)}>›</button>
       </div>
-      <button className="icon board-action" aria-label="플레이어 추가"
-        title={count >= MAX_PLAYERS ? `플레이어 추가 · 최대 ${MAX_PLAYERS}명` : '플레이어 추가'}
+      <button className="icon board-action" aria-label={t('플레이어 추가')}
+        title={count >= MAX_PLAYERS ? t('플레이어 추가 · 최대 {count}명', { count: MAX_PLAYERS }) : t('플레이어 추가')}
         disabled={count >= MAX_PLAYERS} onClick={addPlayer}>
         <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none"
           stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -272,7 +275,7 @@ export function Table({ game, commit, flush, end }: {
           <path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2m3-14v6m-3-3h6" />
         </svg>
       </button>
-      <button className="icon board-action" aria-label="게임 종료" title="게임 종료"
+      <button className="icon board-action" aria-label={t('게임 종료')} title={t('게임 종료')}
         onClick={() => setPopup({ kind: 'end' })}>
         <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none"
           stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -300,9 +303,9 @@ export function Table({ game, commit, flush, end }: {
       deleteVote={id => commit({ ...game, nominations: game.nominations.filter(record => record.id !== id) })}
       deleteWhisper={id => commit({ ...game, whispers: whispers.filter(record => record.id !== id) })} />
 
-    {popup?.kind === 'script' && <ScriptReference name={game.script.name} roles={roles} close={close} />}
-    {popup?.kind === 'end' && <Confirmation title="게임 종료"
-      message="게임을 종료하고 저장된 기록을 삭제할까요?" close={close} confirm={end} />}
+    {popup?.kind === 'script' && <ScriptReference name={scriptName(game.script, language)} roles={roles} close={close} />}
+    {popup?.kind === 'end' && <Confirmation title={t('게임 종료')}
+      message={t('게임을 종료하고 저장된 기록을 삭제할까요?')} close={close} confirm={end} />}
     {popup?.kind === 'player' && selected && <Sheet centered compact title={selected.name} close={close}>
       <div className="stack player-menu">
         {([['profile', '플레이어'], ['alignment', '진영 변경'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', lifeLabel]] as const)
@@ -317,31 +320,31 @@ export function Table({ game, commit, flush, end }: {
             else setPopup({ kind, playerId: selected.id });
           }}>
             <MenuIcon kind={kind === 'life' && !selectedAlive ? 'revival' : kind} />
-            <span>{label}{kind === 'alignment' && selectedAlignment && <small> · {selectedAlignment === 'good' ? '선' : '악'}</small>}</span>
+            <span>{t(label)}{kind === 'alignment' && selectedAlignment && <small> · {t(selectedAlignment === 'good' ? '선' : '악')}</small>}</span>
           </button>)}
       </div>
     </Sheet>}
-    {popup?.kind === 'profile' && selected && <Sheet centered title={`${selected.name} · 플레이어`} close={close}>
+    {popup?.kind === 'profile' && selected && <Sheet centered title={`${selected.name} · ${t('플레이어')}`} close={close}>
       <div className="player-profile">
-        <input aria-label="플레이어명" defaultValue={selected.name} placeholder={`P${selected.seat + 1}`} maxLength={32}
+        <input aria-label={t('플레이어명')} defaultValue={selected.name} placeholder={`P${selected.seat + 1}`} maxLength={32}
           onChange={event => saveProfile(selected.id, { name: event.target.value })} />
         <label className="check">
           <input type="checkbox" checked={selected.traveller}
-            onChange={event => saveProfile(selected.id, { traveller: event.target.checked })} /> Traveller
+            onChange={event => saveProfile(selected.id, { traveller: event.target.checked })} /> {t('여행자')}
         </label>
-        <DeleteButton label={count <= MIN_PLAYERS ? '플레이어 삭제 · 최소 5명' : '플레이어 삭제'}
+        <DeleteButton label={t(count <= MIN_PLAYERS ? '플레이어 삭제 · 최소 5명' : '플레이어 삭제')}
           disabled={count <= MIN_PLAYERS} remove={() => setPopup({ kind: 'delete-player', playerId: selected.id })} />
       </div>
     </Sheet>}
-    {popup?.kind === 'delete-player' && selected && <Confirmation title="플레이어 삭제"
-      message={`${selected.name}의 좌석을 삭제할까요? 관련 기록도 정리됩니다.`}
+    {popup?.kind === 'delete-player' && selected && <Confirmation title={t('플레이어 삭제')}
+      message={t('{name}의 좌석을 삭제할까요? 관련 기록도 정리됩니다.', { name: selected.name })}
       close={close} confirm={() => {
         commit(removePlayer(game, selected.id));
         close();
       }} />}
-    {popup?.kind === 'character' && selected && <Sheet title={`${selected.name} · 캐릭터`} close={close}>
+    {popup?.kind === 'character' && selected && <Sheet title={`${selected.name} · ${t('캐릭터')}`} close={close}>
       <div className="role-grid">
-        <button className="role" aria-label="캐릭터 등록 해제" title="캐릭터 등록 해제"
+        <button className="role" aria-label={t('캐릭터 등록 해제')} title={t('캐릭터 등록 해제')}
           aria-pressed={selected.characterId === undefined}
           onClick={() => { commit({ ...game, players: putCharacter(game, selected.id) }); close(); }} />
         {roles.filter(role => selected.traveller ? role.team === 'traveller'
@@ -353,7 +356,7 @@ export function Table({ game, commit, flush, end }: {
           </button>)}
       </div>
     </Sheet>}
-    {(popup?.kind === 'general' || (popup?.kind === 'memo' && selected)) && <Sheet centered memo title={selected ? `${selected.name} · 메모` : '공통 메모'} close={close}>
+    {(popup?.kind === 'general' || (popup?.kind === 'memo' && selected)) && <Sheet centered memo title={selected ? `${selected.name} · ${t('메모')}` : t('공통 메모')} close={close}>
       <div className="memo-timeline">
         {Array.from({ length: phaseIndex(game.currentPhase) + 1 }, (_, index) => {
           const memoPhase = phaseAt(index);

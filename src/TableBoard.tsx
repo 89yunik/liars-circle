@@ -1,8 +1,9 @@
+import { useLanguage } from './Language.tsx';
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { usePlayerDrag } from './usePlayerDrag.ts';
 import { MenuIcon } from './TableControls.tsx';
-import { characterImage } from './scripts.ts';
 import { Portrait } from './Editors.tsx';
+import { characterImage } from './scripts.ts';
 import { aliveAt, evenlySpacedSeats, playerAlignment, seatPosition, type Character, type Game, type Nomination, type PhaseId, type Whisper } from './model.ts';
 
 export type VoteDraft = Nomination & { step: 1 | 2 };
@@ -30,6 +31,7 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
   completeVote: () => void;
   completeWhisper: () => void;
 }) {
+  const { t } = useLanguage();
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSize, setTableSize] = useState({ width: 0, height: 0 });
   useLayoutEffect(() => {
@@ -83,21 +85,21 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
     <div className="table" ref={tableRef} style={{ '--diameter': `${diameter}px`, '--token-ratio': tokenRatio } as CSSProperties}>
       <div className="table-center">
         {selectSource ? <span className="vote-prompt" role="status">
-          {selectSource === 'votes' ? '지명자 선택' : '밀담 기준 플레이어 선택'}
+          {t(selectSource === 'votes' ? '지명자 선택' : '밀담 기준 플레이어 선택')}
         </span> : vote ? (vote.step === 2
-          ? <button className="primary vote-complete" onClick={completeVote}>완료 · {vote.countedVotes ?? vote.voterIds.length}표</button>
-          : <span className="vote-prompt" role="status">피지명자 선택</span>)
+          ? <button className="primary vote-complete" onClick={completeVote}>{t('완료 · {count}표', { count: vote.countedVotes ?? vote.voterIds.length })}</button>
+          : <span className="vote-prompt" role="status">{t('피지명자 선택')}</span>)
           : whisper ? <>
-            <span className="vote-prompt" role="status">밀담 상대 선택</span>
+            <span className="vote-prompt" role="status">{t('밀담 상대 선택')}</span>
             <button className="primary vote-complete" disabled={!whisper.partnerIds.length}
-              onClick={completeWhisper}>완료 · {whisper.partnerIds.length}명</button>
+              onClick={completeWhisper}>{t('완료 · {count}명', { count: whisper.partnerIds.length })}</button>
           </> : <>
             {composition
-              ? <div className="role-counts" aria-label="기본 역할 구성">
-                {setupRoles.map((label, index) => <span key={label}>{label} <b>{composition[index]}</b></span>)}
+              ? <div className="role-counts" aria-label={t('기본 역할 구성')}>
+                {setupRoles.map((label, index) => <span key={label}>{t(label)} <b>{composition[index]}</b></span>)}
               </div>
-              : <span className="role-counts">기본 구성 · 일반 인원 5–15명</span>}
-            <span>{alive} / {count} 생존</span></>}
+              : <span className="role-counts">{t('기본 구성 · 일반 인원 5–15명')}</span>}
+            <span>{t('{alive} / {count} 생존', { alive, count })}</span></>}
       </div>
       {game.players.map(player => {
         const savedPosition = positions[player.seat];
@@ -120,22 +122,24 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
           onPointerDown={event => { if (!selecting) drag.start(event, player.id, savedPosition); }}
           onTouchStart={event => { if (!selecting) drag.startTouch(event, player.id, savedPosition); }}
         >
-          <button className={`token ${aliveNow ? '' : 'dead'} ${executed ? 'executed' : ''} ${selectedId === player.id ? 'selected' : ''}`}
+          <button className={`token ${aliveNow ? '' : 'dead'} ${selectedId === player.id ? 'selected' : ''}`}
           aria-disabled={selectSource === 'votes' && !canNominate(player.id)}
           aria-pressed={whisper && !whisperSource ? !!whisperPartner : undefined}
-          aria-label={`${player.name}, ${aliveNow ? '생존' : '사망'}${executed ? ', 처형' : ''}${role ? ', ' + role.name : ''}${alignment ? alignment === 'good' ? ', 선' : ', 악' : ''}${nominator ? ', 지명자' : ''}${nominee ? ', 피지명자' : ''}${voter ? ', 투표자' : ''}${whisperSource ? ', 밀담 기준 플레이어' : ''}`}
+          aria-label={[player.name, t(aliveNow ? '생존' : '사망'), executed && t('처형'), role?.name,
+            alignment && t(alignment === 'good' ? '선' : '악'), nominator && t('지명자'), nominee && t('피지명자'),
+            voter && t('투표자'), whisperSource && t('밀담 기준 플레이어')].filter(Boolean).join(', ')}
           title={role ? `${player.name} · ${role.name}` : player.name}
           onClick={() => tap(player.id)}>
           <span className="token-art"><Portrait key={image} src={image} /></span>
-          {statusMark && <span className="token-status" aria-hidden="true">{statusMark}</span>}
+          {statusMark && <span className="token-status" aria-hidden="true">{t(statusMark)}</span>}
           {(nominator || nominee || voter || whisperSource || whisperPartner) && <span className="vote-marks" aria-hidden="true">
-            {nominator && <i className="mark-vote">지</i>}{nominee && <i className="mark-vote">피</i>}{voter && <i className="mark-vote">표</i>}
-            {whisperSource && <i className="mark-whisper">밀</i>}{whisperPartner && <i className="mark-whisper">✓</i>}
+            {nominator && <i className="mark-vote">{t('지명자').slice(0, 1)}</i>}{nominee && <i className="mark-vote">{t('피지명자').slice(0, 1)}</i>}{voter && <i className="mark-vote">{t('투표자').slice(0, 1)}</i>}
+            {whisperSource && <i className="mark-whisper">{t('밀담').slice(0, 1)}</i>}{whisperPartner && <i className="mark-whisper">✓</i>}
           </span>}
           </button>
           <div className="token-caption">
             <button type="button"
-              aria-label={`${player.name} · 플레이어 메뉴`}
+              aria-label={`${player.name} · ${t('플레이어 메뉴')}`}
               className={Array.from(player.name).length > 5 ? 'token-label long-name' : 'token-label'}
               onClick={() => {
                 if (selecting) tap(player.id);
@@ -145,7 +149,7 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
             </button>
           </div>
           <button type="button" className="token-memo" disabled={selecting}
-            aria-label={`${player.name} · ${phase} 메모`} title="메모"
+            aria-label={`${player.name} · ${phase} ${t('메모')}`} title={t('메모')}
             onClick={() => openMemo(player.id)}>
             <MenuIcon kind="memo" />
           </button>

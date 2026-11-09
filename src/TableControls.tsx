@@ -1,14 +1,16 @@
+import { useLanguage } from './Language.tsx';
 import { Sheet } from './Editors.tsx';
 
 export function Confirmation({ title, message, close, confirm }: {
   title: string; message: string; close: () => void; confirm: () => void;
 }) {
+  const { t } = useLanguage();
   return <Sheet centered compact title={title} close={close}>
     <div className="confirmation">
       <p>{message}</p>
       <div className="confirmation-actions">
-        <button onClick={confirm}>예</button>
-        <button onClick={close}>아니오</button>
+        <button onClick={confirm}>{t('예')}</button>
+        <button onClick={close}>{t('아니오')}</button>
       </div>
     </div>
   </Sheet>;
@@ -16,7 +18,6 @@ export function Confirmation({ title, message, close, confirm }: {
 
 const menuPaths = {
   alignment: 'M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4',
-  character: 'M3 5l9 2 9-2v6c0 4-4 8-9 10-5-2-9-6-9-10zM7 11h2m6 0h2m-7 5h4',
   profile: 'M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21v-2a5 5 0 0 1 5-5h3m2 5 5-5 2 2-5 5h-2z',
   memo: 'M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h6',
   nomination: 'M4 11l5 5L20 5M19 12v8H4v-5',

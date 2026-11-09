@@ -39,7 +39,6 @@ label { display: grid; gap: 6px; font-size: .9rem; }
 .primary { background: var(--gold); color: #211820; font-weight: 750; border-color: var(--gold); }
 .primary:hover:not(:disabled) { background: #f3cc91; }
 .danger { color: #ffb2ae; }
-.wide { width: 100%; }
 .eyebrow { color: var(--gold); font-size: .7rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
 .game-setup {
   display: flex; flex-direction: column; gap: 4px;
@@ -139,6 +138,9 @@ label { display: grid; gap: 6px; font-size: .9rem; }
 .reference-portrait img { width: 44px; height: 44px; object-fit: contain; }
 .reference-character h4 { font-size: .9rem; font-weight: 700; overflow-wrap: anywhere; }
 .reference-character p { margin-top: 3px; font-size: .8rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.language-switch {
+  flex: none; width: auto; min-height: 28px; padding: 2px 4px; font-size: .65rem;
+}
 .phase { display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center; }
 .phase strong, .phase button.phase-label { min-width: 2.7ch; font: 1.2rem Georgia, serif; }
 .icon { width: 44px; font-size: 1.35rem; padding: 4px; }
@@ -216,7 +218,7 @@ button.token {
 dialog { position: fixed; inset: auto 0 0; margin: 0 auto; width: min(100%, 560px); max-width: 100%; max-height: min(85dvh, 720px); border: 1px solid var(--line); border-radius: 18px 18px 0 0; background: #201a27; color: inherit; }
 dialog::backdrop { background: #09070bc0; }
 .sheet { padding: 16px 16px max(16px, env(safe-area-inset-bottom)); }
-.memo-editor { margin-bottom: 12px; }
+.memo-editor { margin-bottom: 5px; }
 .memo-timeline .memo-editor label { grid-template-columns: 3ch minmax(0, 1fr); align-items: start; }
 .memo-timeline > :last-child .memo-editor { margin-bottom: 0; }
 .memo-timeline .viewed-phase label { color: var(--gold); }
@@ -344,10 +346,7 @@ button.history-button, .player-menu button, .confirmation p, .confirmation butto
 }
 .player-menu button + button { border-top: 1px solid #a17b484d; }
 .player-menu button:hover:not(:disabled) { background: #a17b4824; }
-.player-menu button:disabled { opacity: 1; }
-.player-menu button:disabled span { opacity: .45; }
 .player-menu svg { flex: none; color: var(--gold); }
-.memo-timeline .memo-editor { margin-bottom: 5px; }
 .memo-timeline textarea { padding-block: 5px; }
 @media (hover: none) and (pointer: coarse) {
   .memo-timeline textarea:focus { font-size: max(16px, .9rem); }

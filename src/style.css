@@ -210,7 +210,8 @@ button.token {
 }
 .token[aria-disabled=true] { opacity: .45; }
 .token-label.long-name { font-size: .625rem; }
-.vote-marks { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; }
+.vote-marks { position: absolute; z-index: 3; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; pointer-events: none; }
+.token-memo:disabled { pointer-events: none; }
 .vote-marks i { font: 700 .65rem system-ui; border: 2px solid currentColor; border-radius: 50%; width: 18px; height: 18px; background: #181520; }
 .mark-vote { color: #65dfcd; }
 .mark-whisper { color: #b6b3bf; }

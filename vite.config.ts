@@ -16,10 +16,11 @@ export default defineConfig({
       for (const file of staticFiles) hash.update(file).update(readFileSync('public/' + file));
       const version = hash.digest('hex').slice(0, 16);
       this.emitFile({ type: 'asset', fileName: 'sw.js', source: `
-const cacheName = ${JSON.stringify('liars-circle:' + version)};
+const cachePrefix = 'liars-circle:' + self.registration.scope + ':';
+const cacheName = cachePrefix + ${JSON.stringify(version)};
 const files = ${JSON.stringify(files)};
 self.addEventListener('install', event => event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(files)).then(() => self.skipWaiting())));
-self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('liars-circle:') && key !== cacheName).map(key => caches.delete(key)))).then(() => self.clients.claim())));
+self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith(cachePrefix) && key !== cacheName).map(key => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
   event.respondWith(caches.open(cacheName).then(async cache => {

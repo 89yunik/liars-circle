@@ -254,7 +254,7 @@ export function Table({ game, commit, flush, end }: {
       <div className="role-picker">
       <div className="role-results">
       <div className="role-grid">
-        {matchingRoles.length > 0 && <button className="role" aria-label={t('캐릭터 등록 해제')} title={t('캐릭터 등록 해제')}
+        {!characterSearch.trim() && matchingRoles.length > 0 && <button className="role" aria-label={t('캐릭터 등록 해제')} title={t('캐릭터 등록 해제')}
           aria-pressed={selected.characterId === undefined}
           onClick={() => { commit({ ...game, players: putCharacter(game, selected.id) }); close(); }} />}
         {matchingRoles.map(role =>

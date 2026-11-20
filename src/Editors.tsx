@@ -47,8 +47,17 @@ export function Sheet({ title, close, centered, compact, memo, children }: {
 }
 
 export function Portrait({ src, fallback = null }: { src?: string; fallback?: ReactNode }) {
-  const [failed, setFailed] = useState(false);
-  return src && isImageUrl(src) && !failed ? <img src={src} alt="" referrerPolicy="no-referrer" onError={() => setFailed(true)} /> : fallback;
+  return src && isImageUrl(src) ? <PortraitImage key={src} src={src} fallback={fallback} /> : fallback;
+}
+
+function PortraitImage({ src, fallback }: { src: string; fallback: ReactNode }) {
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'failed'>('loading');
+  return <>
+    {status !== 'failed' && <img src={src} alt="" referrerPolicy="no-referrer"
+      style={status === 'loaded' ? undefined : { display: 'none' }}
+      onLoad={() => setStatus('loaded')} onError={() => setStatus('failed')} />}
+    {status !== 'loaded' && fallback}
+  </>;
 }
 
 export function MemoEditor({ game, phase, target, label, rows = 3, autoFocus = false, save }: {

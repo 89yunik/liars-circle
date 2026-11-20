@@ -193,6 +193,12 @@ button.token {
 }
 .token-art { display: grid; place-items: center; width: 100%; height: 100%; }
 .token-art img { width: 100%; height: 100%; object-fit: contain; }
+.token-art[data-image-tint="good"] img {
+  filter: grayscale(1) brightness(.85) sepia(1) saturate(5) hue-rotate(165deg);
+}
+.token-art[data-image-tint="evil"] img {
+  filter: grayscale(1) brightness(.85) sepia(1) saturate(5) hue-rotate(310deg);
+}
 .token.dead { border-style: dashed; }
 .token.dead .token-art { opacity: .45; }
 .token.selected { outline: 3px solid var(--character-border); outline-offset: 3px; }

@@ -106,6 +106,9 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
         const role = roles.find(role => role.id === player.characterId);
         const alignment = playerAlignment(player, role);
         const image = characterImage(role, alignment);
+        const defaultAlignment = playerAlignment({ ...player, alignment: undefined }, role);
+        const imageTint = image && alignment && alignment !== defaultAlignment && !role?.alignmentImages?.[alignment]
+          ? alignment : undefined;
         const aliveNow = aliveAt(game, player.id, phase);
         const executed = phaseEvents.some(event => event.kind === 'execution' && event.playerId === player.id);
         const diedThisPhase = !aliveNow && phaseEvents.some(event => event.kind === 'death' && event.playerId === player.id);
@@ -128,7 +131,7 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
             voter && t('투표자'), whisperSource && t('밀담 기준 플레이어')].filter(Boolean).join(', ')}
           title={role ? `${player.name} · ${role.name}` : player.name}
           onClick={() => tap(player.id)}>
-          <span className="token-art"><Portrait key={image} src={image}
+          <span className="token-art" data-image-tint={imageTint}><Portrait key={image} src={image}
             fallback={role ? <span className="role-name">{role.name}</span> : null} /></span>
           {statusMark && <span className="token-status" aria-hidden="true">{t(statusMark)}</span>}
           {(nominator || nominee || voter || whisperSource || whisperPartner) && <span className="vote-marks" aria-hidden="true">

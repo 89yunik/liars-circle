@@ -2,8 +2,8 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { isImageUrl } from './validation.ts';
 import { sameTarget, type Game, type MemoTarget, type PhaseId } from './model.ts';
 
-export function Sheet({ title, close, centered, compact, memo, children }: {
-  title: string; centered?: boolean; compact?: boolean; memo?: boolean; close: () => void; children: ReactNode;
+export function Sheet({ title, close, centered, compact, memo, characterPicker, children }: {
+  title: string; centered?: boolean; compact?: boolean; memo?: boolean; characterPicker?: boolean; close: () => void; children: ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   useLayoutEffect(() => {
@@ -38,7 +38,7 @@ export function Sheet({ title, close, centered, compact, memo, children }: {
       viewport.removeEventListener('scroll', fitMemoToViewport);
     };
   }, [memo]);
-  const className = centered ? ['table-dialog', compact && 'compact-dialog', memo && 'memo-dialog'].filter(Boolean).join(' ') : undefined;
+  const className = [centered && 'table-dialog', compact && 'compact-dialog', memo && 'memo-dialog', characterPicker && 'character-dialog'].filter(Boolean).join(' ') || undefined;
   return <dialog ref={dialog} className={className} aria-label={title}
     onCancel={event => { event.preventDefault(); close(); }}
     onClick={event => { if (event.target === event.currentTarget) close(); }}>
@@ -66,7 +66,7 @@ export function MemoEditor({ game, phase, target, label, rows = 3, autoFocus = f
 }) {
   const memo = game.memos.find(item => item.phaseId === phase && sameTarget(item, target));
   return <div className="memo-editor">
-    <label>{label}<textarea className="focus-zoom-safe" rows={rows} data-initial-focus={autoFocus} value={memo?.text ?? ''}
+    <label><span className="memo-phase">{label}</span><textarea className="focus-zoom-safe" rows={rows} data-initial-focus={autoFocus} value={memo?.text ?? ''}
       onChange={event => save(phase, target, event.target.value)} /></label>
   </div>;
 }

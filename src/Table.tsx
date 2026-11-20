@@ -250,7 +250,7 @@ export function Table({ game, commit, flush, end }: {
         commit(removePlayer(game, selected.id));
         close();
       }} />}
-    {popup?.kind === 'character' && selected && <Sheet title={`${selected.name} · ${t('캐릭터')}`} close={close}>
+    {popup?.kind === 'character' && selected && <Sheet characterPicker title={`${selected.name} · ${t('캐릭터')}`} close={close}>
       <div className="role-picker">
       <div className="role-results">
       <div className="role-grid">

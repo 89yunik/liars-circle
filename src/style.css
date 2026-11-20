@@ -226,8 +226,13 @@ details { margin-block: 6px; }
 summary { min-height: 44px; align-content: center; cursor: pointer; }
 .role-picker { display: flex; flex-direction: column; gap: 12px; max-height: 65dvh; }
 .role-results { min-height: 0; overflow-y: auto; padding: 4px; }
-.role-search { flex-shrink: 0; }
-.role-search input[type="search"] { min-height: 30px; padding: 4px 8px; font-size: .7rem; line-height: 1.3; border-radius: 6px; }
+.role-search { flex-shrink: 0; height: 30px; }
+/* Keep the input font at 16px to avoid iOS focus zoom, then scale to the compact design. */
+.role-search input[type="search"] {
+  display: block; width: calc(100% / .7); height: calc(30px / .7); min-height: 0;
+  padding: calc(4px / .7) calc(8px / .7); font-size: 16px; line-height: 1.3;
+  border-radius: calc(6px / .7); transform: scale(.7); transform-origin: top left;
+}
 .role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 6px; }
 button.role {
   display: grid;

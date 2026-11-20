@@ -27,6 +27,7 @@ export function Table({ game, commit, flush, end }: {
   const [showPhaseDelete, setShowPhaseDelete] = useState(false);
   const [view, setView] = useState<PhaseId | null>(null);
   const [popup, setPopup] = useState<Popup | null>(null);
+  const [characterSearch, setCharacterSearch] = useState('');
   const [history, setHistory] = useState<HistoryKind | null>(null);
   const phase = view ?? game.currentPhase;
   const selection = useTableSelection(game, phase, commit);
@@ -44,6 +45,10 @@ export function Table({ game, commit, flush, end }: {
   const isDay = phase.startsWith('D');
   const roles = useMemo(() => characters(game.script).map(role => localizeCharacter(role, language)), [game.script, language]);
   const selected = popup && 'playerId' in popup ? game.players.find(player => player.id === popup.playerId) : undefined;
+  const searchName = (value: string) => value.normalize('NFC').replace(/\s+/g, '').toLocaleLowerCase();
+  const matchingRoles = roles.filter(role => (selected?.traveller ? role.team === 'traveller'
+    : role.team !== 'traveller' && role.team !== 'fabled' && role.team !== 'loric')
+    && searchName(role.name).includes(searchName(characterSearch)));
   const selectedAlive = selected && aliveAt(game, selected.id, phase);
   const selectedAlignment = selected && playerAlignment(selected, roles.find(role => role.id === selected.characterId));
   const selectedEvents = selected ? playerEventsAt(game, selected.id, phase) : [];
@@ -53,7 +58,7 @@ export function Table({ game, commit, flush, end }: {
     ? selectedLifeEvent.kind === 'revival' ? '부활 취소' : '사망 취소'
     : selectedAlive ? '사망' : '부활';
   const name = (key: string) => game.players.find(player => player.id === key)?.name ?? '—';
-  const close = () => { flush(); setPopup(null); };
+  const close = () => { flush(); setPopup(null); setCharacterSearch(''); };
   const saveMemo = (phaseId: PhaseId, target: MemoTarget, text: string) =>
     commit(writeMemo(game, phaseId, target, text), true);
   const navigate = (offset: number) => {
@@ -246,17 +251,24 @@ export function Table({ game, commit, flush, end }: {
         close();
       }} />}
     {popup?.kind === 'character' && selected && <Sheet title={`${selected.name} · ${t('캐릭터')}`} close={close}>
+      <div className="role-picker">
+      <div className="role-results">
       <div className="role-grid">
-        <button className="role" aria-label={t('캐릭터 등록 해제')} title={t('캐릭터 등록 해제')}
+        {matchingRoles.length > 0 && <button className="role" aria-label={t('캐릭터 등록 해제')} title={t('캐릭터 등록 해제')}
           aria-pressed={selected.characterId === undefined}
-          onClick={() => { commit({ ...game, players: putCharacter(game, selected.id) }); close(); }} />
-        {roles.filter(role => selected.traveller ? role.team === 'traveller'
-          : role.team !== 'traveller' && role.team !== 'fabled' && role.team !== 'loric').map(role =>
+          onClick={() => { commit({ ...game, players: putCharacter(game, selected.id) }); close(); }} />}
+        {matchingRoles.map(role =>
           <button key={role.id} className="role" data-team={role.team} aria-label={role.name} title={role.name}
             aria-pressed={selected.characterId === role.id}
             onClick={() => { commit({ ...game, players: putCharacter(game, selected.id, role.id) }); close(); }}>
             <Portrait src={role.image} fallback={<span className="role-name">{role.name}</span>} />
           </button>)}
+      </div>
+      </div>
+      <div className="role-search">
+        <input type="search" value={characterSearch} aria-label={t('캐릭터 이름 검색')}
+          onChange={event => setCharacterSearch(event.target.value)} />
+      </div>
       </div>
     </Sheet>}
     {(popup?.kind === 'general' || (popup?.kind === 'memo' && selected)) && <Sheet centered memo title={selected ? `${selected.name} · ${t('메모')}` : t('공통 메모')} close={close}>

@@ -45,6 +45,7 @@ const english: Record<string, string> = {
   '{phase} 및 일자 기록 삭제': 'Delete {phase} and its records',
   '캐릭터': 'Character',
   '캐릭터 등록 해제': 'Clear character',
+  '캐릭터 이름 검색': 'Search characters by name',
   '시트 캐릭터 설명': 'Script character reference',
   '캐릭터 설명 보기': 'View character reference',
   '캐릭터 설명': 'Character reference',

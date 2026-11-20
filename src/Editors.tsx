@@ -66,7 +66,7 @@ export function MemoEditor({ game, phase, target, label, rows = 3, autoFocus = f
 }) {
   const memo = game.memos.find(item => item.phaseId === phase && sameTarget(item, target));
   return <div className="memo-editor">
-    <label>{label}<textarea rows={rows} data-initial-focus={autoFocus} value={memo?.text ?? ''}
+    <label>{label}<textarea className="focus-zoom-safe" rows={rows} data-initial-focus={autoFocus} value={memo?.text ?? ''}
       onChange={event => save(phase, target, event.target.value)} /></label>
   </div>;
 }

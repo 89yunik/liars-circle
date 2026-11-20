@@ -266,7 +266,7 @@ export function Table({ game, commit, flush, end }: {
       </div>
       </div>
       <div className="role-search">
-        <input type="search" value={characterSearch} aria-label={t('캐릭터 이름 검색')}
+        <input className="focus-zoom-safe" type="search" value={characterSearch} aria-label={t('캐릭터 이름 검색')}
           onChange={event => setCharacterSearch(event.target.value)} />
       </div>
       </div>

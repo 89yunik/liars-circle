@@ -128,7 +128,8 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
             voter && t('투표자'), whisperSource && t('밀담 기준 플레이어')].filter(Boolean).join(', ')}
           title={role ? `${player.name} · ${role.name}` : player.name}
           onClick={() => tap(player.id)}>
-          <span className="token-art"><Portrait key={image} src={image} /></span>
+          <span className="token-art"><Portrait key={image} src={image}
+            fallback={role ? <span className="role-name">{role.name}</span> : null} /></span>
           {statusMark && <span className="token-status" aria-hidden="true">{t(statusMark)}</span>}
           {(nominator || nominee || voter || whisperSource || whisperPartner) && <span className="vote-marks" aria-hidden="true">
             {nominator && <i className="mark-vote">{t('지명자').slice(0, 1)}</i>}{nominee && <i className="mark-vote">{t('피지명자').slice(0, 1)}</i>}{voter && <i className="mark-vote">{t('투표자').slice(0, 1)}</i>}

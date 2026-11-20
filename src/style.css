@@ -237,7 +237,8 @@ button.role {
   background: transparent;
 }
 .role img { width: 100%; aspect-ratio: 1; object-fit: contain; }
-.role-name { font-size: .58rem; line-height: 1.05; overflow-wrap: anywhere; }
+.role-name { color: var(--character-border); font-size: .7rem; font-weight: 750; line-height: 1.15; text-align: center; overflow-wrap: anywhere; max-width: 100%; }
+.token-art .role-name { max-width: 85%; }
 button.role[aria-pressed=true] { outline: 2px solid var(--character-border); outline-offset: 1px; }
 footer { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 12px; font-size: .72rem; color: var(--muted); }
 footer img { width: 100px; height: auto; margin-bottom: 8px; }

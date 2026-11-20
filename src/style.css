@@ -368,6 +368,16 @@ button.history-button, .player-menu button, .confirmation p, .confirmation butto
 .player-menu button + button { border-top: 1px solid #a17b484d; }
 .player-menu button:hover:not(:disabled) { background: #a17b4824; }
 .player-menu svg { flex: none; color: var(--gold); }
+dialog.memo-dialog[data-alignment="good"] {
+  --gold: var(--character-border-good); --memo-accent-glow: #57b2e12e;
+}
+dialog.memo-dialog[data-alignment="evil"] {
+  --gold: var(--character-border-evil); --memo-accent-glow: #e569742e;
+}
+dialog.table-dialog.memo-dialog[data-alignment] {
+  border-color: var(--gold);
+  box-shadow: inset 0 0 0 3px var(--memo-accent-glow), 0 0 0 3px #17131a, 0 14px 48px #000a;
+}
 dialog.table-dialog.memo-dialog {
   inset: var(--memo-center-y, 50%) auto auto var(--memo-center-x, 50%);
   transform: translate(-50%, -50%); margin: 0;

@@ -1,9 +1,9 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { isImageUrl } from './validation.ts';
-import { sameTarget, type Game, type MemoTarget, type PhaseId } from './model.ts';
+import { sameTarget, type Alignment, type Game, type MemoTarget, type PhaseId } from './model.ts';
 
-export function Sheet({ title, close, centered, compact, memo, characterPicker, children }: {
-  title: string; centered?: boolean; compact?: boolean; memo?: boolean; characterPicker?: boolean; close: () => void; children: ReactNode;
+export function Sheet({ title, close, centered, compact, memo, characterPicker, alignment, children }: {
+  title: string; centered?: boolean; compact?: boolean; memo?: boolean; characterPicker?: boolean; alignment?: Alignment; close: () => void; children: ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   useLayoutEffect(() => {
@@ -39,7 +39,7 @@ export function Sheet({ title, close, centered, compact, memo, characterPicker, 
     };
   }, [memo]);
   const className = [centered && 'table-dialog', compact && 'compact-dialog', memo && 'memo-dialog', characterPicker && 'character-dialog'].filter(Boolean).join(' ') || undefined;
-  return <dialog ref={dialog} className={className} aria-label={title}
+  return <dialog ref={dialog} className={className} aria-label={title} data-alignment={alignment}
     onCancel={event => { event.preventDefault(); close(); }}
     onClick={event => { if (event.target === event.currentTarget) close(); }}>
     <section className="sheet">{children}</section>

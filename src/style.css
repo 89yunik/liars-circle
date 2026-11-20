@@ -228,11 +228,10 @@ dialog { position: fixed; inset: auto 0 0; margin: 0 auto; width: min(100%, 560p
 dialog::backdrop { background: #09070bc0; }
 .sheet { padding: 16px 16px max(16px, env(safe-area-inset-bottom)); }
 .memo-editor { margin-bottom: 5px; }
-.memo-timeline .memo-editor label, .role-search {
+.memo-timeline .memo-editor label {
   display: grid; grid-template-columns: 3ch minmax(0, 1fr); gap: 6px;
   align-items: start; font-size: .9rem;
 }
-.role-search input { grid-column: 2; }
 .memo-timeline .memo-editor label { align-items: center; }
 .memo-timeline > :last-child .memo-editor { margin-bottom: 0; }
 .memo-timeline .viewed-phase label { color: var(--gold); }

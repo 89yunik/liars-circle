@@ -17,6 +17,8 @@ export function Confirmation({ title, message, close, confirm }: {
 }
 
 const menuPaths = {
+  delete: 'M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7',
+  traveller: 'M9 6V4h6v2M5 7h14v14H5zM9 7v14m6-14v14M3 11h2m14 0h2',
   alignment: 'M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4',
   profile: 'M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21v-2a5 5 0 0 1 5-5h3m2 5 5-5 2 2-5 5h-2z',
   memo: 'M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h6',

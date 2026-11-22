@@ -10,12 +10,12 @@ import {
 import { characters } from './scripts.ts';
 import { useTableSelection } from './useTableSelection.ts';
 import { TableBoard } from './TableBoard.tsx';
-import { Confirmation, DeleteButton, MenuIcon } from './TableControls.tsx';
+import { Confirmation, MenuIcon } from './TableControls.tsx';
 import { TableHistory, type HistoryKind } from './TableHistory.tsx';
 import { ScriptReference } from './ScriptReference.tsx';
 
 type Popup =
-  | { kind: 'player' | 'character' | 'memo' | 'profile' | 'delete-player'; playerId: string }
+  | { kind: 'player' | 'character' | 'memo' | 'delete-player'; playerId: string }
   | { kind: 'general' | 'end' | 'script' };
 
 export function Table({ game, commit, flush, end }: {
@@ -87,7 +87,7 @@ export function Table({ game, commit, flush, end }: {
     while (names.has(`P${number}`)) number++;
     const player = { id: id(), name: `P${number}`, seat, traveller: false };
     commit({ ...game, players: [...game.players, player] });
-    setPopup({ kind: 'profile', playerId: player.id });
+    setPopup({ kind: 'player', playerId: player.id });
   }
 
   function saveProfile(playerId: string, changes: { name?: string; traveller?: boolean }) {
@@ -216,7 +216,13 @@ export function Table({ game, commit, flush, end }: {
       message={t('게임을 종료하고 저장된 기록을 삭제할까요?')} close={close} confirm={end} />}
     {popup?.kind === 'player' && selected && <Sheet centered compact title={selected.name} close={close}>
       <div className="stack player-menu">
-        {([['profile', '플레이어'], ['alignment', '진영 변경'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', lifeLabel]] as const)
+        <label className="player-menu-name">
+          <MenuIcon kind="profile" />
+          <input className="focus-zoom-safe" aria-label={t('플레이어명')} defaultValue={selected.name}
+            placeholder={`P${selected.seat + 1}`} maxLength={32}
+            onChange={event => saveProfile(selected.id, { name: event.target.value })} />
+        </label>
+        {([['alignment', '진영 변경'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', lifeLabel]] as const)
           .filter(([kind]) => isDay || kind !== 'execution')
           .map(([kind, label]) => <button key={kind} className="record-link"
             onClick={() => {
@@ -225,23 +231,21 @@ export function Table({ game, commit, flush, end }: {
                 ? { ...player, alignment: selectedAlignment === 'good' ? 'evil' : 'good' } : player) });
               close();
             } else if (kind === 'execution' || kind === 'life') recordPlayerEvent(selected.id, kind);
-            else setPopup({ kind, playerId: selected.id });
           }}>
             <MenuIcon kind={kind === 'life' && !selectedAlive ? 'revival' : kind} />
             <span>{t(label)}{kind === 'alignment' && selectedAlignment && <small> · {t(selectedAlignment === 'good' ? '선' : '악')}</small>}</span>
           </button>)}
-      </div>
-    </Sheet>}
-    {popup?.kind === 'profile' && selected && <Sheet centered title={`${selected.name} · ${t('플레이어')}`} close={close}>
-      <div className="player-profile">
-        <input aria-label={t('플레이어명')} defaultValue={selected.name} placeholder={`P${selected.seat + 1}`} maxLength={32}
-          onChange={event => saveProfile(selected.id, { name: event.target.value })} />
-        <label className="check">
-          <input type="checkbox" checked={selected.traveller}
-            onChange={event => saveProfile(selected.id, { traveller: event.target.checked })} /> {t('여행자')}
-        </label>
-        <DeleteButton label={t(count <= MIN_PLAYERS ? '플레이어 삭제 · 최소 5명' : '플레이어 삭제')}
-          disabled={count <= MIN_PLAYERS} remove={() => setPopup({ kind: 'delete-player', playerId: selected.id })} />
+        <button className="record-link" aria-pressed={selected.traveller}
+          onClick={() => saveProfile(selected.id, { traveller: !selected.traveller })}>
+          <MenuIcon kind="traveller" />
+          <span>{t('여행자')}</span>
+        </button>
+        <button className="record-link" disabled={count <= MIN_PLAYERS}
+          title={count <= MIN_PLAYERS ? t('플레이어 삭제 · 최소 5명') : undefined}
+          onClick={() => setPopup({ kind: 'delete-player', playerId: selected.id })}>
+          <MenuIcon kind="delete" />
+          <span>{t('삭제')}</span>
+        </button>
       </div>
     </Sheet>}
     {popup?.kind === 'delete-player' && selected && <Confirmation title={t('플레이어 삭제')}

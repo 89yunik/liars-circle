@@ -96,6 +96,33 @@ export function newGame(script: Script, seats: Pick<Player, 'name' | 'traveller'
   };
 }
 
+function updatePlayer(game: Game, playerId: string, update: (player: Player) => Player): Game {
+  if (!game.players.some(player => player.id === playerId)) return game;
+  return { ...game, players: game.players.map(player => player.id === playerId ? update(player) : player) };
+}
+
+export function renamePlayer(game: Game, playerId: string, name: string): Game {
+  return updatePlayer(game, playerId, player => ({ ...player, name: name.trim() || `P${player.seat + 1}` }));
+}
+
+export function setTraveller(game: Game, playerId: string, traveller: boolean): Game {
+  return updatePlayer(game, playerId, player => player.traveller === traveller ? player : {
+    ...player, traveller, characterId: undefined, alignment: undefined,
+  });
+}
+
+export function setCharacter(game: Game, playerId: string, characterId?: string): Game {
+  return updatePlayer(game, playerId, player => ({
+    ...player, characterId, alignment: characterId === undefined ? undefined : player.alignment,
+  }));
+}
+
+export function togglePlayerAlignment(game: Game, playerId: string, character?: Character): Game {
+  return updatePlayer(game, playerId, player => ({
+    ...player, alignment: playerAlignment(player, character) === 'good' ? 'evil' : 'good',
+  }));
+}
+
 export function reorderPlayer(game: Game, playerId: string, seat: number): Game {
   const previousSeat = game.players.findIndex(player => player.id === playerId);
   if (previousSeat < 0 || !Number.isInteger(seat) || seat < 0 || seat >= game.players.length || previousSeat === seat) return game;

@@ -4,7 +4,7 @@ import { flushSync } from 'react-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MemoEditor, Portrait, Sheet } from './Editors.tsx';
 import {
-  aliveAt, id, MAX_PLAYERS, MAX_PHASES, MIN_PLAYERS, phaseAt, phaseIndex, playerAlignment, playerEventsAt, removePlayer, reorderPlayer, togglePlayerEvent, writeMemo,
+  aliveAt, id, MAX_PLAYERS, MAX_PHASES, MIN_PLAYERS, phaseAt, phaseIndex, playerAlignment, playerEventsAt, removePlayer, reorderPlayer, renamePlayer, setTraveller, setCharacter, togglePlayerAlignment, togglePlayerEvent, writeMemo,
   type Game, type MemoTarget, type PhaseId,
 } from './model.ts';
 import { characters } from './scripts.ts';
@@ -88,23 +88,6 @@ export function Table({ game, commit, flush, end }: {
     const player = { id: id(), name: `P${number}`, seat, traveller: false };
     commit({ ...game, players: [...game.players, player] });
     setPopup({ kind: 'player', playerId: player.id });
-  }
-
-  function saveProfile(playerId: string, changes: { name?: string; traveller?: boolean }) {
-    commit({
-      ...game,
-      players: game.players.map(player => {
-        if (player.id !== playerId) return player;
-        const traveller = changes.traveller ?? player.traveller;
-        return {
-          ...player,
-          name: changes.name === undefined ? player.name : changes.name.trim() || `P${player.seat + 1}`,
-          traveller,
-          characterId: traveller === player.traveller ? player.characterId : undefined,
-          alignment: traveller === player.traveller ? player.alignment : undefined,
-        };
-      }),
-    }, true);
   }
 
   function openMemo(playerId?: string) {
@@ -221,15 +204,14 @@ export function Table({ game, commit, flush, end }: {
           <MenuIcon kind="profile" />
           <input className="focus-zoom-safe" aria-label={t('플레이어명')} defaultValue={selected.name}
             placeholder={`P${selected.seat + 1}`} maxLength={32}
-            onChange={event => saveProfile(selected.id, { name: event.target.value })} />
+            onChange={event => commit(renamePlayer(game, selected.id, event.target.value), true)} />
         </label>
         {([['alignment', '진영 변경'], ['execution', selectedExecuted ? '처형 취소' : '처형'], ['life', lifeLabel]] as const)
           .filter(([kind]) => isDay || kind !== 'execution')
           .map(([kind, label]) => <button key={kind} className="record-link"
             onClick={() => {
             if (kind === 'alignment') {
-              commit({ ...game, players: game.players.map(player => player.id === selected.id
-                ? { ...player, alignment: selectedAlignment === 'good' ? 'evil' : 'good' } : player) });
+              commit(togglePlayerAlignment(game, selected.id, roles.find(role => role.id === selected.characterId)));
               close();
             } else if (kind === 'execution' || kind === 'life') recordPlayerEvent(selected.id, kind);
           }}>
@@ -237,7 +219,7 @@ export function Table({ game, commit, flush, end }: {
             <span>{t(label)}{kind === 'alignment' && selectedAlignment && <small> · {t(selectedAlignment === 'good' ? '선' : '악')}</small>}</span>
           </button>)}
         <button className="record-link" aria-pressed={selected.traveller}
-          onClick={() => saveProfile(selected.id, { traveller: !selected.traveller })}>
+          onClick={() => commit(setTraveller(game, selected.id, !selected.traveller), true)}>
           <MenuIcon kind="traveller" />
           <span>{t('여행자')}</span>
         </button>
@@ -261,11 +243,11 @@ export function Table({ game, commit, flush, end }: {
       <div className="role-grid">
         {!characterSearch.trim() && matchingRoles.length > 0 && <button className="role" aria-label={t('캐릭터 등록 해제')} title={t('캐릭터 등록 해제')}
           aria-pressed={selected.characterId === undefined}
-          onClick={() => { commit({ ...game, players: putCharacter(game, selected.id) }); close(); }} />}
+          onClick={() => { commit(setCharacter(game, selected.id)); close(); }} />}
         {matchingRoles.map(role =>
           <button key={role.id} className="role" data-team={role.team} aria-label={role.name} title={role.name}
             aria-pressed={selected.characterId === role.id}
-            onClick={() => { commit({ ...game, players: putCharacter(game, selected.id, role.id) }); close(); }}>
+            onClick={() => { commit(setCharacter(game, selected.id, role.id)); close(); }}>
             <Portrait src={role.image} fallback={<span className="role-name">{role.name}</span>} />
           </button>)}
       </div>
@@ -288,10 +270,4 @@ export function Table({ game, commit, flush, end }: {
       </div>
     </Sheet>}
   </>;
-}
-
-function putCharacter(game: Game, playerId: string, characterId?: string) {
-  return game.players.map(player => player.id === playerId
-    ? { ...player, characterId, alignment: characterId === undefined ? undefined : player.alignment }
-    : player);
 }

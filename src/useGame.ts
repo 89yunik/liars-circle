@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { gameKey, isGame, isLibrary, libraryKey, restoreGame, restoreLibrary, restorePlayerNames, playerNamesKey, isPlayerNames } from './storage.ts';
+import { gameKey, isGame, isLibrary, libraryKey, restoreGame, restoreLibrary, restoreSetupSettings, setupSettingsKey, isSetupSettings } from './storage.ts';
 import { createStoredValue, StorageConflictError } from './persistence.ts';
 import { useWriteLock } from './useWriteLock.ts';
+import { setupFromGame, type SetupSettings } from './setupSettings.ts';
 import type { Game, Script } from './model.ts';
 
 export function useGame() {
   const [initial] = useState(restoreGame);
-  const [initialNames] = useState(restorePlayerNames);
-  const [playerNames, setPlayerNames] = useState(initialNames.value);
-  const [namesStore] = useState(() => createStoredValue<string[]>(playerNamesKey, initialNames.raw, isPlayerNames));
+  const [initialSettings] = useState(restoreSetupSettings);
+  const [setupSettings, setSetupSettings] = useState(initialSettings.value);
+  const currentSettings = useRef(setupSettings);
+  const [settingsStore] = useState(() => createStoredValue<SetupSettings>(setupSettingsKey, initialSettings.raw, isSetupSettings));
   const [initialLibrary] = useState(restoreLibrary);
   const [gameStore] = useState(() => createStoredValue<Game>(gameKey, initial.raw, isGame));
   const [libraryStore] = useState(() => createStoredValue<Script[]>(libraryKey, initialLibrary.raw, isLibrary));
@@ -17,7 +19,7 @@ export function useGame() {
   const [library, setLibrary] = useState(initialLibrary.value);
   const [error, setError] = useState('');
   const [libraryError, setLibraryError] = useState('');
-  const [namesError, setNamesError] = useState('');
+  const [namesError, setNamesError] = useState(initialSettings.error);
   const current = useRef(game);
   const currentLibrary = useRef(library);
   const timer = useRef<number | undefined>(undefined);
@@ -72,10 +74,10 @@ export function useGame() {
     if (initial.error || !allowed.current) return;
     try {
       if (!gameStore.isCurrent()) throw new StorageConflictError();
-      const names = current.current?.players.map(player => player.name);
-      if (names) namesStore.write(names);
+      const settings = current.current ? setupFromGame(currentSettings.current, current.current) : null;
+      if (settings) settingsStore.write(settings);
       gameStore.remove();
-      if (names) setPlayerNames(names);
+      if (settings) { currentSettings.current = settings; setSetupSettings(settings); setNamesError(''); }
       window.clearTimeout(timer.current);
       pending.current = false;
       current.current = null;
@@ -84,11 +86,12 @@ export function useGame() {
     } catch (error) { setError(error instanceof StorageConflictError ? error.message : '저장소에서 게임을 종료할 수 없습니다.'); }
   }
 
-  function updatePlayerNames(names: string[]) {
+  function updateSetupSettings(settings: SetupSettings) {
     if (!allowed.current) return;
     try {
-      namesStore.write(names);
-      setPlayerNames(names);
+      settingsStore.write(settings);
+      currentSettings.current = settings;
+      setSetupSettings(settings);
       setNamesError('');
     } catch (error) {
       setNamesError(error instanceof StorageConflictError ? error.message : '플레이어 이름을 저장할 수 없습니다.');
@@ -110,6 +113,6 @@ export function useGame() {
     }
   }
 
-  return { game, library, playerNames, updatePlayerNames, namesError, commit, end, flush, updateLibrary, error, libraryError,
+  return { game, library, setupSettings, updateSetupSettings, namesError, commit, end, flush, updateLibrary, error, libraryError,
     readOnly, restoreError: initial.error, restoreLibraryError: initialLibrary.error };
 }

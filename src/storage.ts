@@ -2,12 +2,28 @@ import { isImageUrl, isObject, isPhase } from './validation.ts';
 import { characters } from './scripts.ts';
 import { MAX_PLAYERS, MAX_SCRIPT_ENTRIES, MIN_PLAYERS, phaseIndex, teams, type Game, type Script } from './model.ts';
 
+import { defaultSetupSettings, type SetupSettings } from './setupSettings.ts';
+
 export const gameKey = 'liars-circle.game';
 export const libraryKey = 'liars-circle.scripts';
 export const playerNamesKey = 'liars-circle.player-names';
 export const isPlayerNames = (value: unknown): value is string[] => Array.isArray(value) &&
   value.length >= MIN_PLAYERS && value.length <= MAX_PLAYERS && value.every(name => typeof name === 'string');
 export const restorePlayerNames = () => read<string[]>(playerNamesKey, [], isPlayerNames);
+
+export const setupSettingsKey = 'liars-circle.setup';
+export const isSetupSettings = (value: unknown): value is SetupSettings => isObject(value) &&
+  typeof value.count === 'number' && Number.isInteger(value.count) && value.count >= MIN_PLAYERS && value.count <= MAX_PLAYERS &&
+  Array.isArray(value.names) && value.names.length === MAX_PLAYERS && value.names.every(name => typeof name === 'string');
+
+export function restoreSetupSettings() {
+  const restored = read<SetupSettings>(setupSettingsKey, defaultSetupSettings(), isSetupSettings);
+  if (restored.raw !== null || restored.error) return restored;
+  const legacy = restorePlayerNames();
+  return { ...restored, error: legacy.error, value: legacy.value.length
+    ? { count: legacy.value.length, names: Array.from({ length: MAX_PLAYERS }, (_, index) => legacy.value[index] ?? '') }
+    : restored.value };
+}
 
 export function isScript(value: unknown): value is Script {
   if (!isObject(value) || typeof value.id !== 'string' || typeof value.name !== 'string' ||

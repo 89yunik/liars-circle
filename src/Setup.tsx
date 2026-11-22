@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { MAX_PLAYERS, MIN_PLAYERS, newGame, type Game, type Script } from './model.ts';
 import { officialScripts, parseScript } from './scripts.ts';
 
-export function Setup({ playerNames, updatePlayerNames, library, update, start, blocked, libraryBlocked }: {
-  playerNames: string[];
-  updatePlayerNames: (names: string[]) => void;
+import { changeSetupName, type SetupSettings } from './setupSettings.ts';
+
+export function Setup({ initialSettings, updateSettings, library, update, start, blocked, libraryBlocked }: {
+  initialSettings: SetupSettings;
+  updateSettings: (settings: SetupSettings) => void;
   library: Script[];
   update: (update: (scripts: Script[]) => Script[]) => boolean;
   start: (game: Game) => void;
@@ -14,8 +16,14 @@ export function Setup({ playerNames, updatePlayerNames, library, update, start, 
   libraryBlocked: boolean;
 }) {
   const { t, language } = useLanguage();
-  const [seats, setSeats] = useState(Array.from({ length: MAX_PLAYERS }, (_, index) => ({ name: playerNames[index] ?? '', traveller: false })));
-  const [count, setCount] = useState(playerNames.length || 15);
+  const [settings, setSettings] = useState(initialSettings);
+  const [travellerSeats, setTravellerSeats] = useState<boolean[]>(Array(MAX_PLAYERS).fill(false));
+  const { count } = settings;
+  const seats = settings.names.map((name, index) => ({ name, traveller: travellerSeats[index] }));
+  function saveSettings(next: SetupSettings) {
+    setSettings(next);
+    updateSettings(next);
+  }
   const [sheet, setSheet] = useState('tb');
   const [error, setError] = useState('');
   const importInput = useRef<HTMLInputElement>(null);
@@ -38,10 +46,9 @@ export function Setup({ playerNames, updatePlayerNames, library, update, start, 
   const selected = [...officialScripts, ...library].find(script => script.id === sheet) ?? officialScripts[0];
   const travellers = seats.slice(0, count).filter(seat => seat.traveller).length;
   function changeSeat(index: number, seat: typeof seats[number]) {
-    const next = seats.map((current, i) => i === index ? seat : current);
-    setSeats(next);
-    if (seat.name !== seats[index].name) {
-      updatePlayerNames(next.slice(0, Math.max(count, playerNames.length)).map(current => current.name));
+    if (seat.name !== settings.names[index]) saveSettings(changeSetupName(settings, index, seat.name));
+    if (seat.traveller !== travellerSeats[index]) {
+      setTravellerSeats(previous => previous.map((current, i) => i === index ? seat.traveller : current));
     }
   }
 
@@ -51,7 +58,7 @@ export function Setup({ playerNames, updatePlayerNames, library, update, start, 
       if (!blocked) start(newGame(selected, seats.slice(0, count)));
     }}>
       <div className="setup-options">
-        <label>{t('플레이어 수')}<select value={count} onChange={event => setCount(Number(event.target.value))}>
+        <label>{t('플레이어 수')}<select value={count} onChange={event => saveSettings({ ...settings, count: Number(event.target.value) })}>
           {Array.from({ length: MAX_PLAYERS - MIN_PLAYERS + 1 }, (_, i) => <option key={i + MIN_PLAYERS}>{i + MIN_PLAYERS}</option>)}
         </select></label>
         <div className="sheet-field">

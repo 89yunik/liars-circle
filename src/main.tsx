@@ -20,7 +20,7 @@ function App() {
     {state.namesError && <p role="alert" className="notice">{localizeError(language, state.namesError)}</p>}
     {state.libraryError && <p role="alert" className="notice">{localizeError(language, state.libraryError)}</p>}
     {state.game ? <Table key={state.game.id} game={state.game} commit={state.commit} flush={state.flush} end={state.end} /> :
-      <Setup playerNames={state.playerNames} updatePlayerNames={state.updatePlayerNames} library={state.library} update={state.updateLibrary} start={state.commit}
+      <Setup initialSettings={state.setupSettings} updateSettings={state.updateSetupSettings} library={state.library} update={state.updateLibrary} start={state.commit}
         blocked={!!state.restoreError || state.readOnly} libraryBlocked={!!state.restoreLibraryError || state.readOnly} />}
     <footer>
       <img src="./botc/ccc.png" alt="Blood on the Clocktower Community Created Content" />

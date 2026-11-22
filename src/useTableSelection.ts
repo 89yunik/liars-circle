@@ -4,7 +4,8 @@ import { id, nextSequence, putRecord, type Game, type Nomination, type PhaseId, 
 export type RecordKind = 'votes' | 'whispers';
 export type VoteDraft = Nomination & { step: 1 | 2 };
 type Selection =
-  | { kind: 'source'; source: RecordKind }
+  | { kind: 'source'; source: 'votes'; record?: Nomination }
+  | { kind: 'source'; source: 'whispers'; record?: Whisper }
   | { kind: 'vote'; draft: VoteDraft }
   | { kind: 'whisper'; draft: Whisper }
   | null;
@@ -37,15 +38,15 @@ export function useTableSelection(game: Game, phase: PhaseId, commit: (game: Gam
 
   function tap(playerId: string) {
     if (!selection) return false;
-    if (selectSource === 'votes' && phase.startsWith('D')) {
+    if (selection.kind === 'source' && selection.source === 'votes' && phase.startsWith('D')) {
       setSelection({ kind: 'vote', draft: {
         id: id(), phaseId: phase, sequence: nextSequence([...game.events, ...game.nominations], phase),
-        nominatorId: playerId, nomineeId: '', voterIds: [], step: 1,
+        nomineeId: '', voterIds: [], ...selection.record, nominatorId: playerId, step: 1,
       } });
-    } else if (selectSource === 'whispers' && phase.startsWith('D')) {
+    } else if (selection.kind === 'source' && selection.source === 'whispers' && phase.startsWith('D')) {
       setSelection({ kind: 'whisper', draft: {
         id: id(), phaseId: phase as Whisper['phaseId'], sequence: nextSequence(game.whispers ?? [], phase),
-        playerId, partnerIds: [],
+        ...selection.record, playerId, partnerIds: (selection.record?.partnerIds ?? []).filter(id => id !== playerId),
       } });
     } else if (whisper && playerId !== whisper.playerId) {
       setSelection({ kind: 'whisper', draft: { ...whisper, partnerIds: toggle(whisper.partnerIds, playerId) } });
@@ -76,9 +77,10 @@ export function useTableSelection(game: Game, phase: PhaseId, commit: (game: Gam
 
   return {
     vote, whisper, selectSource, selecting, tap, completeVote, completeWhisper,
-    begin: (source: RecordKind) => setSelection({ kind: 'source', source }),
-    editVote: (record: Nomination) => setSelection({ kind: 'vote', draft: { ...record, step: 1 } }),
-    editWhisper: (record: Whisper) => setSelection({ kind: 'whisper', draft: record }),
+    begin: (source: RecordKind) => setSelection(source === 'votes'
+      ? { kind: 'source', source: 'votes' } : { kind: 'source', source: 'whispers' }),
+    editVote: (record: Nomination) => setSelection({ kind: 'source', source: 'votes', record }),
+    editWhisper: (record: Whisper) => setSelection({ kind: 'source', source: 'whispers', record }),
   };
 }
 

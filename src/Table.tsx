@@ -216,7 +216,7 @@ export function Table({ game, commit, flush, end }: {
     {popup?.kind === 'end' && <Confirmation title={t('게임 종료')}
       message={t('게임을 종료하고 저장된 기록을 삭제할까요?')} close={close} confirm={end} />}
     {popup?.kind === 'player' && selected && <Sheet centered compact title={selected.name} close={close}>
-      <div className="stack player-menu">
+      <div className="stack player-menu" tabIndex={-1} data-initial-focus="true">
         <label className="player-menu-name">
           <MenuIcon kind="profile" />
           <input className="focus-zoom-safe" aria-label={t('플레이어명')} defaultValue={selected.name}

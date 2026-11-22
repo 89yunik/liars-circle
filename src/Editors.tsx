@@ -9,7 +9,7 @@ export function Sheet({ title, close, centered, compact, memo, characterPicker, 
   useLayoutEffect(() => {
     const element = dialog.current;
     if (!element) return;
-    const initialField = element.querySelector<HTMLTextAreaElement>('textarea[data-initial-focus="true"]');
+    const initialField = element.querySelector<HTMLElement>('[data-initial-focus="true"]');
     initialField?.setAttribute('autofocus', '');
     element.showModal();
 

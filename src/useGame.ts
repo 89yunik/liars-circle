@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { gameKey, isGame, isLibrary, libraryKey, restoreGame, restoreLibrary } from './storage.ts';
+import { gameKey, isGame, isLibrary, libraryKey, restoreGame, restoreLibrary, restorePlayerNames, playerNamesKey, isPlayerNames } from './storage.ts';
 import { createStoredValue, StorageConflictError } from './persistence.ts';
 import { useWriteLock } from './useWriteLock.ts';
 import type { Game, Script } from './model.ts';
 
 export function useGame() {
   const [initial] = useState(restoreGame);
+  const [initialNames] = useState(restorePlayerNames);
+  const [playerNames, setPlayerNames] = useState(initialNames.value);
+  const [namesStore] = useState(() => createStoredValue<string[]>(playerNamesKey, initialNames.raw, isPlayerNames));
   const [initialLibrary] = useState(restoreLibrary);
   const [gameStore] = useState(() => createStoredValue<Game>(gameKey, initial.raw, isGame));
   const [libraryStore] = useState(() => createStoredValue<Script[]>(libraryKey, initialLibrary.raw, isLibrary));
@@ -67,7 +70,11 @@ export function useGame() {
   function end() {
     if (initial.error || !allowed.current) return;
     try {
+      if (!gameStore.isCurrent()) throw new StorageConflictError();
+      const names = current.current?.players.map(player => player.name);
+      if (names) namesStore.write(names);
       gameStore.remove();
+      if (names) setPlayerNames(names);
       window.clearTimeout(timer.current);
       pending.current = false;
       current.current = null;
@@ -91,6 +98,6 @@ export function useGame() {
     }
   }
 
-  return { game, library, commit, end, flush, updateLibrary, error, libraryError,
+  return { game, library, playerNames, commit, end, flush, updateLibrary, error, libraryError,
     readOnly, restoreError: initial.error, restoreLibraryError: initialLibrary.error };
 }

@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { aliveAt, evenlySpacedSeats, newGame, nextSequence, phaseAt, phaseIndex, playerAlignment, putRecord, removeLifeEvent, removePlayer, reorderPlayer, seatPosition, usedGhostVote, writeMemo,
   type GameEvent, type Nomination } from '../src/model.ts';
 import { characterImage, characters, officialScripts, parseScript } from '../src/scripts.ts';
-import { gameKey, libraryKey, restoreGame, restoreLibrary } from '../src/storage.ts';
+import { gameKey, libraryKey, restoreGame, restoreLibrary, playerNamesKey, restorePlayerNames } from '../src/storage.ts';
 
 const fresh = () => newGame(officialScripts[0], Array.from({ length: 5 }, () => ({ name: '', traveller: false })));
 
@@ -255,4 +255,29 @@ test('stored game and library restore independently and malformed input stays in
   localStorage.setItem(gameKey, '{');
   assert.ok(restoreGame().error);
   assert.equal(localStorage.getItem(gameKey), '{');
+});
+
+
+test('player names survive game removal and malformed saved names fall back safely', () => {
+  const data = new Map<string, string>();
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key: string) => data.get(key) ?? null,
+      setItem: (key: string, value: string) => data.set(key, value),
+      removeItem: (key: string) => data.delete(key),
+    },
+  });
+  const game = fresh();
+  const names = ['민수', '지연', 'P3', '수빈', '준호'];
+  localStorage.setItem(gameKey, JSON.stringify(game));
+  localStorage.setItem(playerNamesKey, JSON.stringify(names));
+  localStorage.removeItem(gameKey);
+  assert.equal(restoreGame().value, null);
+  assert.deepEqual(restorePlayerNames().value, names);
+  for (const invalid of [null, ['one'], [...names, 123], Array(21).fill('name')]) {
+    localStorage.setItem(playerNamesKey, JSON.stringify(invalid));
+    assert.deepEqual(restorePlayerNames().value, []);
+    assert.ok(restorePlayerNames().error);
+  }
 });

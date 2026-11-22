@@ -4,6 +4,10 @@ import { MAX_PLAYERS, MAX_SCRIPT_ENTRIES, MIN_PLAYERS, phaseIndex, teams, type G
 
 export const gameKey = 'liars-circle.game';
 export const libraryKey = 'liars-circle.scripts';
+export const playerNamesKey = 'liars-circle.player-names';
+export const isPlayerNames = (value: unknown): value is string[] => Array.isArray(value) &&
+  value.length >= MIN_PLAYERS && value.length <= MAX_PLAYERS && value.every(name => typeof name === 'string');
+export const restorePlayerNames = () => read<string[]>(playerNamesKey, [], isPlayerNames);
 
 export function isScript(value: unknown): value is Script {
   if (!isObject(value) || typeof value.id !== 'string' || typeof value.name !== 'string' ||

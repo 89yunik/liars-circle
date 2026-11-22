@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { MAX_PLAYERS, MIN_PLAYERS, newGame, type Game, type Script } from './model.ts';
 import { officialScripts, parseScript } from './scripts.ts';
 
-export function Setup({ library, update, start, blocked, libraryBlocked }: {
+export function Setup({ playerNames, library, update, start, blocked, libraryBlocked }: {
+  playerNames: string[];
   library: Script[];
   update: (update: (scripts: Script[]) => Script[]) => boolean;
   start: (game: Game) => void;
@@ -12,8 +13,8 @@ export function Setup({ library, update, start, blocked, libraryBlocked }: {
   libraryBlocked: boolean;
 }) {
   const { t, language } = useLanguage();
-  const [seats, setSeats] = useState(Array.from({ length: MAX_PLAYERS }, () => ({ name: '', traveller: false })));
-  const [count, setCount] = useState(15);
+  const [seats, setSeats] = useState(Array.from({ length: MAX_PLAYERS }, (_, index) => ({ name: playerNames[index] ?? '', traveller: false })));
+  const [count, setCount] = useState(playerNames.length || 15);
   const [sheet, setSheet] = useState('tb');
   const [error, setError] = useState('');
   const importInput = useRef<HTMLInputElement>(null);

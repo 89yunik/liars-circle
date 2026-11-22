@@ -19,7 +19,7 @@ function App() {
     {state.error && <div role="alert" className="notice sticky-error">{localizeError(language, state.error)} <button onClick={state.flush}>{t('저장 재시도')}</button></div>}
     {state.libraryError && <p role="alert" className="notice">{localizeError(language, state.libraryError)}</p>}
     {state.game ? <Table key={state.game.id} game={state.game} commit={state.commit} flush={state.flush} end={state.end} /> :
-      <Setup library={state.library} update={state.updateLibrary} start={state.commit}
+      <Setup playerNames={state.playerNames} library={state.library} update={state.updateLibrary} start={state.commit}
         blocked={!!state.restoreError || state.readOnly} libraryBlocked={!!state.restoreLibraryError || state.readOnly} />}
     <footer>
       <img src="./botc/ccc.png" alt="Blood on the Clocktower Community Created Content" />

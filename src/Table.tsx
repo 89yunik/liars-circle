@@ -101,6 +101,7 @@ export function Table({ game, commit, flush, end }: {
           name: changes.name === undefined ? player.name : changes.name.trim() || `P${player.seat + 1}`,
           traveller,
           characterId: traveller === player.traveller ? player.characterId : undefined,
+          alignment: traveller === player.traveller ? player.alignment : undefined,
         };
       }),
     }, true);
@@ -290,5 +291,7 @@ export function Table({ game, commit, flush, end }: {
 }
 
 function putCharacter(game: Game, playerId: string, characterId?: string) {
-  return game.players.map(player => player.id === playerId ? { ...player, characterId } : player);
+  return game.players.map(player => player.id === playerId
+    ? { ...player, characterId, alignment: characterId === undefined ? undefined : player.alignment }
+    : player);
 }

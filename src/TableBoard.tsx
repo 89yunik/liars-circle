@@ -1,10 +1,8 @@
 import { useLanguage } from './Language.tsx';
-import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
-import { usePlayerDrag } from './usePlayerDrag.ts';
-import { MenuIcon } from './TableControls.tsx';
-import { Portrait } from './Editors.tsx';
-import { characterImage } from './scripts.ts';
-import { aliveAt, evenlySpacedSeats, playerAlignment, seatPosition, type Character, type Game, type PhaseId, type Whisper } from './model.ts';
+import { type CSSProperties } from 'react';
+import { useTableLayout } from './useTableLayout.ts';
+import { PlayerToken } from './PlayerToken.tsx';
+import { aliveAt, type Character, type Game, type PhaseId, type Whisper } from './model.ts';
 
 import type { VoteDraft } from './tableSelection.ts';
 
@@ -32,56 +30,14 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
   completeWhisper: () => void;
 }) {
   const { t } = useLanguage();
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSize, setTableSize] = useState({ width: 0, height: 0 });
-  useLayoutEffect(() => {
-    const table = tableRef.current;
-    if (!table) return;
-    const measure = () => {
-      const { width, height } = table.getBoundingClientRect();
-      setTableSize(previous => previous.width === width && previous.height === height ? previous : { width, height });
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(table);
-    return () => observer.disconnect();
-  }, []);
   const alive = game.players.filter(player => aliveAt(game, player.id, phase)).length;
   const count = game.players.length;
   const standardCount = game.players.filter(player => !player.traveller).length;
   const composition = setupCounts[standardCount - 5];
   const phaseEvents = game.events.filter(event => event.phaseId === phase);
-  const radius = Math.max(111, Math.ceil(76 / (2 * Math.sin(Math.PI / count))));
-  const diameter = radius * 2 + 76;
-  const tokenRatio = 56 / diameter;
-  // Match the inset used to position the token centers in CSS.
-  const inset = Math.min(tableSize.width, tableSize.height) * tokenRatio / 2 + 10;
-  const radiusX = tableSize.width / 2 - inset;
-  const radiusY = tableSize.height / 2 - inset - 5;
-  const positions = radiusX > 0 && radiusY > 0
-    ? evenlySpacedSeats(count, radiusX, radiusY)
-    : game.players.map(player => seatPosition(player.seat, count, 1));
+  const { tableRef, diameter, tokenRatio, positions, drag, resetSuppressedClick, suppressDragClick } = useTableLayout(count, movePlayer);
 
-  const drag = usePlayerDrag(radiusX, radiusY, (playerId, position) => {
-    let nearestSeat = 0;
-    let nearestDistance = Infinity;
-    positions.forEach((seat, index) => {
-      const distance = Math.hypot((seat.x - position.x) * radiusX, (seat.y - position.y) * radiusY);
-      if (distance < nearestDistance) {
-        nearestSeat = index;
-        nearestDistance = distance;
-      }
-    });
-    movePlayer(playerId, nearestSeat);
-  });
-
-  return <div className="table-area" onPointerDownCapture={() => { drag.suppressClick.current = false; }} onClickCapture={event => {
-    if (event.detail !== 0 && drag.suppressClick.current) {
-      drag.suppressClick.current = false;
-      event.preventDefault();
-      event.stopPropagation();
-    }
-  }}>
+  return <div className="table-area" onPointerDownCapture={resetSuppressedClick} onClickCapture={suppressDragClick}>
     <div className="table" ref={tableRef} style={{ '--diameter': `${diameter}px`, '--token-ratio': tokenRatio } as CSSProperties}>
       <div className="table-center">
         {selectSource ? <span className="vote-prompt" role="status">
@@ -105,59 +61,22 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
         const savedPosition = positions[player.seat];
         const pos = drag.preview?.playerId === player.id ? drag.preview.position : savedPosition;
         const role = roles.find(role => role.id === player.characterId);
-        const alignment = playerAlignment(player, role);
-        const image = characterImage(role, alignment);
-        const defaultAlignment = playerAlignment({ ...player, alignment: undefined }, role);
-        const imageTint = image && alignment && alignment !== defaultAlignment && !role?.alignmentImages?.[alignment]
-          ? alignment : undefined;
         const aliveNow = aliveAt(game, player.id, phase);
         const executed = phaseEvents.some(event => event.kind === 'execution' && event.playerId === player.id);
         const diedThisPhase = !aliveNow && phaseEvents.some(event => event.kind === 'death' && event.playerId === player.id);
-        const statusMark = executed ? '처형' : diedThisPhase ? '사망' : '';
-        const nominator = vote?.nominatorId === player.id || (selectSource === 'votes' && sourcePlayerId === player.id);
-        const nominee = vote?.nomineeId === player.id;
-        const voter = vote?.voterIds.includes(player.id);
-        const whisperSource = whisper?.playerId === player.id || (selectSource === 'whispers' && sourcePlayerId === player.id);
-        const whisperPartner = whisper?.partnerIds.includes(player.id);
-        return <div key={player.id} data-team={role?.team} data-alignment={alignment} className={drag.preview?.playerId === player.id ? 'token-seat dragging' : 'token-seat'}
-          style={{ '--seat-x': pos.x, '--seat-y': pos.y } as CSSProperties}
-          onDragStart={event => event.preventDefault()}
+        return <PlayerToken key={player.id} player={player} role={role} phase={phase} position={pos}
+          dragging={drag.preview?.playerId === player.id} selected={selectedId === player.id}
+          aliveNow={aliveNow} executed={executed} diedThisPhase={diedThisPhase}
+          marks={{
+            nominator: vote?.nominatorId === player.id || (selectSource === 'votes' && sourcePlayerId === player.id),
+            nominee: vote?.nomineeId === player.id,
+            voter: vote?.voterIds.includes(player.id) ?? false,
+            whisperSource: whisper?.playerId === player.id || (selectSource === 'whispers' && sourcePlayerId === player.id),
+            whisperPartner: whisper?.partnerIds.includes(player.id) ?? false,
+          }}
+          selecting={selecting} selectingWhisper={whisper !== null} tap={tap} openPlayer={openPlayer} openMemo={openMemo}
           onPointerDown={event => { if (!selecting) drag.start(event, player.id, savedPosition); }}
-          onTouchStart={event => { if (!selecting) drag.startTouch(event, player.id, savedPosition); }}
-        >
-          <button data-selection-interactive className={`token ${aliveNow ? '' : 'dead'} ${selectedId === player.id ? 'selected' : ''}`}
-          aria-pressed={whisper && !whisperSource ? !!whisperPartner : undefined}
-          aria-label={[player.name, t(aliveNow ? '생존' : '사망'), executed && t('처형'), role?.name,
-            alignment && t(alignment === 'good' ? '선' : '악'), nominator && t('지명자'), nominee && t('피지명자'),
-            voter && t('투표자'), whisperSource && t('밀담 기준 플레이어')].filter(Boolean).join(', ')}
-          title={role ? `${player.name} · ${role.name}` : player.name}
-          onClick={() => tap(player.id)}>
-          <span className="token-art" data-image-tint={imageTint}><Portrait key={image} src={image}
-            fallback={role ? <span className="role-name">{role.name}</span> : null} /></span>
-          {statusMark && <span className="token-status" aria-hidden="true">{t(statusMark)}</span>}
-          {(nominator || nominee || voter || whisperSource || whisperPartner) && <span className="vote-marks" aria-hidden="true">
-            {nominator && <i className="mark-vote">{t('지명자').slice(0, 1)}</i>}{nominee && <i className="mark-vote">{t('피지명자').slice(0, 1)}</i>}{voter && <i className="mark-vote">{t('투표자').slice(0, 1)}</i>}
-            {whisperSource && <i className="mark-whisper">{t('밀담').slice(0, 1)}</i>}{whisperPartner && <i className="mark-whisper">✓</i>}
-          </span>}
-          </button>
-          <div className="token-caption">
-            <button type="button"
-              aria-label={`${player.name} · ${t('플레이어 메뉴')}`}
-              data-selection-interactive
-              className={Array.from(player.name).length > 5 ? 'token-label long-name' : 'token-label'}
-              onClick={() => {
-                if (selecting) tap(player.id);
-                else openPlayer(player.id);
-              }}>
-              {player.name}{player.traveller && <sup> T</sup>}
-            </button>
-          </div>
-          <button type="button" className="token-memo" disabled={selecting}
-            aria-label={`${player.name} · ${phase} ${t('메모')}`} title={t('메모')}
-            onClick={() => openMemo(player.id)}>
-            <MenuIcon kind="memo" />
-          </button>
-        </div>;
+          onTouchStart={event => { if (!selecting) drag.startTouch(event, player.id, savedPosition); }} />;
       })}
     </div>
   </div>;

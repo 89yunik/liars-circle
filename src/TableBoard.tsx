@@ -6,7 +6,7 @@ import { Portrait } from './Editors.tsx';
 import { characterImage } from './scripts.ts';
 import { aliveAt, evenlySpacedSeats, playerAlignment, seatPosition, type Character, type Game, type PhaseId, type Whisper } from './model.ts';
 
-import type { VoteDraft } from './useTableSelection.ts';
+import type { VoteDraft } from './tableSelection.ts';
 
 const setupCounts = [
   [3, 0, 1, 1], [3, 1, 1, 1], [5, 0, 1, 1], [5, 1, 1, 1], [5, 2, 1, 1],
@@ -87,11 +87,11 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
         {selectSource ? <span className="vote-prompt" role="status">
           {t(selectSource === 'votes' ? '지명자 선택' : '밀담 기준 플레이어 선택')}
         </span> : vote ? (vote.step === 2
-          ? <button className="primary vote-complete" onClick={completeVote}>{t('완료 · {count}표', { count: vote.countedVotes ?? vote.voterIds.length })}</button>
+          ? <button data-selection-interactive className="primary vote-complete" onClick={completeVote}>{t('완료 · {count}표', { count: vote.countedVotes ?? vote.voterIds.length })}</button>
           : <span className="vote-prompt" role="status">{t('피지명자 선택')}</span>)
           : whisper ? <>
             <span className="vote-prompt" role="status">{t('밀담 상대 선택')}</span>
-            <button className="primary vote-complete" disabled={!whisper.partnerIds.length}
+            <button data-selection-interactive className="primary vote-complete" disabled={!whisper.partnerIds.length}
               onClick={completeWhisper}>{t('완료 · {count}명', { count: whisper.partnerIds.length })}</button>
           </> : <>
             {composition
@@ -125,7 +125,7 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
           onPointerDown={event => { if (!selecting) drag.start(event, player.id, savedPosition); }}
           onTouchStart={event => { if (!selecting) drag.startTouch(event, player.id, savedPosition); }}
         >
-          <button className={`token ${aliveNow ? '' : 'dead'} ${selectedId === player.id ? 'selected' : ''}`}
+          <button data-selection-interactive className={`token ${aliveNow ? '' : 'dead'} ${selectedId === player.id ? 'selected' : ''}`}
           aria-pressed={whisper && !whisperSource ? !!whisperPartner : undefined}
           aria-label={[player.name, t(aliveNow ? '생존' : '사망'), executed && t('처형'), role?.name,
             alignment && t(alignment === 'good' ? '선' : '악'), nominator && t('지명자'), nominee && t('피지명자'),
@@ -143,6 +143,7 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
           <div className="token-caption">
             <button type="button"
               aria-label={`${player.name} · ${t('플레이어 메뉴')}`}
+              data-selection-interactive
               className={Array.from(player.name).length > 5 ? 'token-label long-name' : 'token-label'}
               onClick={() => {
                 if (selecting) tap(player.id);

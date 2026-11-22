@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import { DeleteButton, MenuIcon } from './TableControls.tsx';
 import { phaseIndex, type Nomination, type PhaseId, type Whisper } from './model.ts';
 
-import type { RecordKind as HistoryKind } from './useTableSelection.ts';
-export type { RecordKind as HistoryKind } from './useTableSelection.ts';
+import type { RecordKind as HistoryKind } from './tableSelection.ts';
+export type { RecordKind as HistoryKind } from './tableSelection.ts';
 
 export function TableHistory({
   nominations, whispers, history, selecting, setHistory, name, openMemo,
@@ -28,7 +28,7 @@ export function TableHistory({
   return <section className="vote-history">
     {([['votes', '지명·투표', 'nomination', nominations.length], ['whispers', '밀담', 'whisper', whispers.length]] as const)
       .map(([kind, label, icon, total]) => <div className="record-actions" key={kind}>
-        <button className="history-button record-start" disabled={!isDay}
+        <button data-selection-interactive className="history-button record-start" disabled={!isDay}
           aria-label={t(kind === 'votes' ? '지명자 선택' : '밀담 인원 선택')} onClick={() => startSelection(kind)}>
           <MenuIcon kind={icon} /> {t(label)}
         </button>

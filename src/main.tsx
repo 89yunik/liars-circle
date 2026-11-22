@@ -17,9 +17,10 @@ function App() {
     {state.restoreError && <p role="alert" className="notice">{t('게임 복원 실패 · {error}. 기존 데이터가 보존되어 있습니다.', { error: localizeError(language, state.restoreError) })}</p>}
     {state.restoreLibraryError && <p role="alert" className="notice">{t('시트 복원 실패 · {error}. 기존 데이터가 보존되어 있습니다.', { error: localizeError(language, state.restoreLibraryError) })}</p>}
     {state.error && <div role="alert" className="notice sticky-error">{localizeError(language, state.error)} <button onClick={state.flush}>{t('저장 재시도')}</button></div>}
+    {state.namesError && <p role="alert" className="notice">{localizeError(language, state.namesError)}</p>}
     {state.libraryError && <p role="alert" className="notice">{localizeError(language, state.libraryError)}</p>}
     {state.game ? <Table key={state.game.id} game={state.game} commit={state.commit} flush={state.flush} end={state.end} /> :
-      <Setup playerNames={state.playerNames} library={state.library} update={state.updateLibrary} start={state.commit}
+      <Setup playerNames={state.playerNames} updatePlayerNames={state.updatePlayerNames} library={state.library} update={state.updateLibrary} start={state.commit}
         blocked={!!state.restoreError || state.readOnly} libraryBlocked={!!state.restoreLibraryError || state.readOnly} />}
     <footer>
       <img src="./botc/ccc.png" alt="Blood on the Clocktower Community Created Content" />

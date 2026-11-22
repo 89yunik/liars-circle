@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import { MAX_PLAYERS, MIN_PLAYERS, newGame, type Game, type Script } from './model.ts';
 import { officialScripts, parseScript } from './scripts.ts';
 
-export function Setup({ playerNames, library, update, start, blocked, libraryBlocked }: {
+export function Setup({ playerNames, updatePlayerNames, library, update, start, blocked, libraryBlocked }: {
   playerNames: string[];
+  updatePlayerNames: (names: string[]) => void;
   library: Script[];
   update: (update: (scripts: Script[]) => Script[]) => boolean;
   start: (game: Game) => void;
@@ -37,7 +38,11 @@ export function Setup({ playerNames, library, update, start, blocked, libraryBlo
   const selected = [...officialScripts, ...library].find(script => script.id === sheet) ?? officialScripts[0];
   const travellers = seats.slice(0, count).filter(seat => seat.traveller).length;
   function changeSeat(index: number, seat: typeof seats[number]) {
-    setSeats(previous => previous.map((current, i) => i === index ? seat : current));
+    const next = seats.map((current, i) => i === index ? seat : current);
+    setSeats(next);
+    if (seat.name !== seats[index].name) {
+      updatePlayerNames(next.slice(0, Math.max(count, playerNames.length)).map(current => current.name));
+    }
   }
 
   return <section className="setup">

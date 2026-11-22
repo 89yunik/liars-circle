@@ -17,6 +17,7 @@ export function useGame() {
   const [library, setLibrary] = useState(initialLibrary.value);
   const [error, setError] = useState('');
   const [libraryError, setLibraryError] = useState('');
+  const [namesError, setNamesError] = useState('');
   const current = useRef(game);
   const currentLibrary = useRef(library);
   const timer = useRef<number | undefined>(undefined);
@@ -83,6 +84,17 @@ export function useGame() {
     } catch (error) { setError(error instanceof StorageConflictError ? error.message : '저장소에서 게임을 종료할 수 없습니다.'); }
   }
 
+  function updatePlayerNames(names: string[]) {
+    if (!allowed.current) return;
+    try {
+      namesStore.write(names);
+      setPlayerNames(names);
+      setNamesError('');
+    } catch (error) {
+      setNamesError(error instanceof StorageConflictError ? error.message : '플레이어 이름을 저장할 수 없습니다.');
+    }
+  }
+
   function updateLibrary(update: (scripts: Script[]) => Script[]) {
     if (initialLibrary.error || !allowed.current) return false;
     try {
@@ -98,6 +110,6 @@ export function useGame() {
     }
   }
 
-  return { game, library, playerNames, commit, end, flush, updateLibrary, error, libraryError,
+  return { game, library, playerNames, updatePlayerNames, namesError, commit, end, flush, updateLibrary, error, libraryError,
     readOnly, restoreError: initial.error, restoreLibraryError: initialLibrary.error };
 }

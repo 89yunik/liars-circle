@@ -14,7 +14,7 @@ const setupCounts = [
 ];
 const setupRoles = ['주민', '외지인', '하수인', '악마'];
 
-export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap, openMemo, openPlayer, selecting, selectSource, movePlayer, completeVote, completeWhisper }: {
+export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap, openMemo, openPlayer, selecting, selectSource, sourcePlayerId, movePlayer, completeVote, completeWhisper }: {
   game: Game;
   phase: PhaseId;
   roles: Character[];
@@ -26,6 +26,7 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
   openPlayer: (playerId: string) => void;
   selecting: boolean;
   selectSource: 'votes' | 'whispers' | null;
+  sourcePlayerId?: string;
   movePlayer: (playerId: string, seat: number) => void;
   completeVote: () => void;
   completeWhisper: () => void;
@@ -113,10 +114,10 @@ export function TableBoard({ game, phase, roles, selectedId, vote, whisper, tap,
         const executed = phaseEvents.some(event => event.kind === 'execution' && event.playerId === player.id);
         const diedThisPhase = !aliveNow && phaseEvents.some(event => event.kind === 'death' && event.playerId === player.id);
         const statusMark = executed ? '처형' : diedThisPhase ? '사망' : '';
-        const nominator = vote?.nominatorId === player.id;
+        const nominator = vote?.nominatorId === player.id || (selectSource === 'votes' && sourcePlayerId === player.id);
         const nominee = vote?.nomineeId === player.id;
         const voter = vote?.voterIds.includes(player.id);
-        const whisperSource = whisper?.playerId === player.id;
+        const whisperSource = whisper?.playerId === player.id || (selectSource === 'whispers' && sourcePlayerId === player.id);
         const whisperPartner = whisper?.partnerIds.includes(player.id);
         return <div key={player.id} data-team={role?.team} data-alignment={alignment} className={drag.preview?.playerId === player.id ? 'token-seat dragging' : 'token-seat'}
           style={{ '--seat-x': pos.x, '--seat-y': pos.y } as CSSProperties}

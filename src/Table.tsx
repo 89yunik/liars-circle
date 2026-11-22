@@ -194,7 +194,7 @@ export function Table({ game, commit, flush, end }: {
       </button>
     </header>
     <TableBoard game={game} phase={phase} roles={roles} selectedId={selected?.id} vote={vote} whisper={whisper}
-      tap={tap} openMemo={openMemo} selecting={selecting} selectSource={selectSource}
+      tap={tap} openMemo={openMemo} selecting={selecting} selectSource={selectSource} sourcePlayerId={selection.sourcePlayerId}
       openPlayer={playerId => setPopup({ kind: 'player', playerId })}
       movePlayer={(playerId, seat) => commit(reorderPlayer(game, playerId, seat))}
       completeVote={selection.completeVote} completeWhisper={selection.completeWhisper} />

@@ -15,6 +15,9 @@ export function useTableSelection(game: Game, phase: PhaseId, commit: (game: Gam
   const vote = selection?.kind === 'vote' ? selection.draft : null;
   const whisper = selection?.kind === 'whisper' ? selection.draft : null;
   const selectSource = selection?.kind === 'source' ? selection.source : null;
+  const sourcePlayerId = selection?.kind === 'source'
+    ? selection.source === 'votes' ? selection.record?.nominatorId : selection.record?.playerId
+    : undefined;
   const selecting = selection !== null;
 
   useEffect(() => {
@@ -76,7 +79,7 @@ export function useTableSelection(game: Game, phase: PhaseId, commit: (game: Gam
   }
 
   return {
-    vote, whisper, selectSource, selecting, tap, completeVote, completeWhisper,
+    vote, whisper, selectSource, sourcePlayerId, selecting, tap, completeVote, completeWhisper,
     begin: (source: RecordKind) => setSelection(source === 'votes'
       ? { kind: 'source', source: 'votes' } : { kind: 'source', source: 'whispers' }),
     editVote: (record: Nomination) => setSelection({ kind: 'source', source: 'votes', record }),
